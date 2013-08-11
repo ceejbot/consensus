@@ -1,0 +1,21 @@
+doctype 5
+html
+    head
+        title= title
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel='stylesheet', href='/css/bootstrap.min.css', media="screen")
+    body
+        .navbar
+            a.navbar-brand(href="#") Consensus
+            ul.nav.navbar-nav
+                li.active
+                    a(href="#") Home
+                li
+                    a(href="#") Agendas
+                li
+                    a(href="#") Me
+            button.btn.btn-default.navbar-btn(type="button") Sign in
+        .container
+            block content
+        script(src="http://code.jquery.com/jquery.js")
+        script(src='/js/bootstrap.min.js')
