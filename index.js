@@ -18,7 +18,7 @@ var SESSION_TTL = 1000 * 60 * 60 * 24 * 365; // 1 year in milliseconds, TODO con
 
 // CONFIGURATION???!!!!
 var controller = new Controller();
-app.controller = app;
+app.controller = controller;
 var sessiondb = require('level-session')(path.join('.', 'db', 'sessions.db'));
 
 // ----------------------------------------------------------------------
@@ -26,29 +26,30 @@ var sessiondb = require('level-session')(path.join('.', 'db', 'sessions.db'));
 
 function initializePageLocals(request, response, next)
 {
-	response.locals.user = request.session.handle;
-	response.locals.user_id = request.session.user_id;
+	request.session.get('user_id', function(err, user_id)
+	{
+		response.locals.user_id = user_id;
+		response.locals.flash = {};
+		response.locals.flash.info = request.flash('info');
+		response.locals.flash.error = request.flash('error');
+		response.locals.flash.success = request.flash('success');
+		response.locals.flash.warning = request.flash('warning');
 
-	response.locals.flash = {};
-	response.locals.flash.info = request.flash('info');
-	response.locals.flash.error = request.flash('error');
-	response.locals.flash.success = request.flash('success');
-	response.locals.flash.warning = request.flash('warning');
-
-	next();
+		next();
+	});
 }
 
 function authenticatedUser(request, response, next)
 {
 	response.locals.authed_user = null;
-	var user_id = request.session.user_id;
-	if (!user_id)
+
+	var email = response.locals.user_id;
+	if (!email)
 		return next();
 
-	controller.personByEmail(user_id)
+	controller.personByEmail(email)
 	.then(function(person)
 	{
-		app.logger.info('session found user', person);
 		response.locals.authed_user = person;
 	})
 	.fail(function(err)
@@ -93,8 +94,6 @@ var logstream =
 };
 
 // ----------------------------------------------------------------------
-
-
 
 // all environments
 app.set('port', process.env.PORT || 3000);

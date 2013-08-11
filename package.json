@@ -30,7 +30,8 @@
 		"node-uuid":        "*",
 		"p-promise":        "*",
 		"polyclay":         "~1.5.5",
-		"polyclay-levelup": "~0.0.3"
+		"polyclay-levelup": "~0.0.3",
+		"request":          "*"
 	},
 	"repository":
 	{
