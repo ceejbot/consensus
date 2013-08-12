@@ -13,76 +13,24 @@ html
 					a(href="#") Home
 				- if (locals.authed_user !== null)
 					li
-						a(href="#") Agendas
+						a(href="/agendas/closed") History
 					li
-						a(href="#") Me
+						a(href="/agendas/relevant") Your agendas
+					li
+						a(href="/settings") #{locals.authed_user.email}
 			- if (locals.authed_user !== null)
-				button.btn.btn-default.navbar-btn#signout(type="button") Sign out
+				button.pull-right.btn.btn-default.navbar-btn#signout(type="button") Sign out
 			- else
-				button.btn.btn-default.navbar-btn#signin(type="button") Sign in
+				button.pull-right.btn.btn-default.navbar-btn#signin(type="button") Sign in
 		.container
 			block content
 		script(src="http://code.jquery.com/jquery.js")
 		script(src='/js/bootstrap.min.js')
 		script(src="https://login.persona.org/include.js")
-
 		- if (locals.authed_user)
 			script.
 				var authed_user = '#{authed_user.email}';
 		- else
 			script.
 				var authed_user = null;
-
-		script.
-			navigator.id.watch(
-			{
-				loggedInUser: authed_user,
-				onlogin: function(assertion)
-				{
-					// A user has logged in! Here you need to:
-					// 1. Send the assertion to your backend for verification and to create a session.
-					// 2. Update your UI.
-					$.ajax(
-					{ 
-						type: 'POST',
-						url: '/auth/signin', // This is a URL on your website.
-						data: { assertion: assertion },
-						success: function(res, status, xhr)
-						{
-							if (res.page)
-								window.location.href = res.page;
-							else
-								window.location.reload();
-						},
-						error: function(xhr, status, err)
-						{
-							navigator.id.logout();
-							console.log("Login failure: " + err);
-						}
-					});
-				},
-				onlogout: function() 
-				{
-					$.ajax(
-					{
-						type: 'POST',
-						url: '/auth/signout',
-						success: function(res, status, xhr) { window.location.reload(); },
-						error: function(xhr, status, err) { console.log("Logout failure: " + err); }
-					});
-				}
-			});
-
-			$(document).ready(function()
-			{
-				$('#signin').click(function()
-				{
-					navigator.id.request({siteName: 'Consensus'});
-				});
-
-				$('#signout').click(function()
-				{
-					navigator.id.logout();
-				});
-			});
-
+		script(src="/js/persona.js")

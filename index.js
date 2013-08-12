@@ -14,12 +14,16 @@ app.http().io();
 
 var appname = 'consensus';
 
-var SESSION_TTL = 1000 * 60 * 60 * 24 * 365; // 1 year in milliseconds, TODO config
+app.SESSION_TTL = 1000 * 60 * 60 * 24 * 365; // 1 year in milliseconds, TODO config
+
+var config = fs.readFileSync('./config.js');
+if (config.length)
+	config = JSON.parse(config);
 
 // CONFIGURATION???!!!!
-var controller = new Controller();
+var controller = new Controller(config);
 app.controller = controller;
-var sessiondb = require('level-session')(path.join('.', 'db', 'sessions.db'));
+var sessiondb = require('level-session')(path.join(config.dbpath, 'sessions.db'));
 
 // ----------------------------------------------------------------------
 // middleware
@@ -66,7 +70,7 @@ function requireAuthedUser(request, response, next)
 	if (response.locals.authed_user)
 		return next();
 
-	console.log('requireAuthedUser did not find a user');
+	request.app.logger.debug('requireAuthedUser did not find a user');
 	response.cookie('destination', request.originalUrl);
 	request.flash('info', 'You must log in before you can continue');
 	response.redirect('/login');
@@ -74,17 +78,18 @@ function requireAuthedUser(request, response, next)
 
 // ----------------------------------------------------------------------
 
-if (!fs.existsSync('./log'))
-	fs.mkdirSync('./log');
+if (!fs.existsSync(config.logging.path))
+	fs.mkdirSync(config.logging.path);
 
-var fname = path.join('.', 'log', appname + '.log');
+var fname = path.join(config.logging.path, appname + '.log');
 var logopts =
 {
 	name: appname,
 	serializers: bunyan.stdSerializers,
 	streams: [ { level: 'info', path: fname, } ]
 };
-logopts.streams.push({level: 'info', stream: process.stdout});
+if (config.logging.console)
+	logopts.streams.push({level: 'debug', stream: process.stdout});
 
 app.logger = bunyan.createLogger(logopts);
 
@@ -122,13 +127,7 @@ app.get('/', routes.index);
 app.post('/auth/signin', routes.signin);
 app.post('/auth/signout', routes.signin);
 
-
 app.get('/ping', function(request, response)
-{
-	response.send(200, 'pong');
-});
-
-app.get('/health', function(request, response)
 {
 	var health =
 	{

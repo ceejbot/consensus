@@ -27,6 +27,7 @@
 		"leveldown":        "*",
 		"levelup":          "*",
 		"lodash":           "*",
+		"marked":           "*",
 		"node-uuid":        "*",
 		"p-promise":        "*",
 		"polyclay":         "~1.5.5",

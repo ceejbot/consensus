@@ -33,8 +33,6 @@ exports.signin = function(request, response)
 			response.app.controller.findOrCreatePerson(verified.email)
 			.then(function(person)
 			{
-				console.log(person);
-
 				if (!person)
 				{
 					response.redirect('/');
