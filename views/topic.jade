@@ -9,4 +9,19 @@ block content
 	p Proposed for discussion at 
 		a(href="/agendas/#{agenda.key}")= agenda.title
 		.
+	- if (locals.authed_user)
+		p
+			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/yes")
+				i.icon-large.icon-thumbs-up
+				| &nbsp; Yes 
+			&nbsp;
+			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/no")
+				i.icon-large.icon-thumbs-down
+				| &nbsp; No
+
+			&nbsp;
+			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/flag")
+				i.icon-large.icon-warning-sign
+				| &nbsp; Inappropriate
+
 	p Voting report will go here.
