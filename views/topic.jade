@@ -10,19 +10,21 @@ block content
 		a(href="/agendas/#{agenda.key}")= agenda.title
 		.
 	- if (locals.authed_user)
-		p
-			a.btn.btn-large(href="/topics/#{topic.key}/vote/yes", class=yes_class)
-				i.icon-large.icon-thumbs-up
-				| &nbsp; Yes 
-			&nbsp;
-			a.btn.btn-large(href="/topics/#{topic.key}/vote/no", class=no_class)
-				i.icon-large.icon-thumbs-down
-				| &nbsp; No
-
-			&nbsp;
-			a.btn.btn-large(href="/topics/#{topic.key}/vote/flag", class=flag_class)
-				i.icon-large.icon-warning-sign
-				| &nbsp; Inappropriate
+		.row
+			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/yes")
+				button.btn.btn-large(type="submit", class=yes_class, value="yes")
+					i.icon-large.icon-thumbs-up
+					| &nbsp; Yes 
+				&nbsp;
+			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/no")
+				button.btn.btn-large(type="submit", class=no_class, value='no')
+					i.icon-large.icon-thumbs-down
+					| &nbsp; No
+				&nbsp;
+			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/flag")
+				button.btn.btn-large(type="submit", class=flag_class, value="flag")
+					i.icon-large.icon-warning-sign
+					| &nbsp; Inappropriate
 
 	p Current tally: 
 		b= topic.tally

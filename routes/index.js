@@ -102,6 +102,7 @@ exports.agenda = function(request, response)
 
 exports.agendaNewGet = function(request, response)
 {
+	response.app.logger.info('hello new agenda form');
 	response.render('agenda-edit', { title: 'New agenda' });
 };
 
