@@ -10,7 +10,12 @@ block content
 			p
 				a.btn.btn-primary.btn-lg(href="") Sign in with Persona
 	- else
-		p Open agendas here.
-
+		- if (locals.agendas.length === 0)
+			p No meetings are seeking your consensus today.
+		- else
+			- for (var i = 0; i < locals.agendas.length; i++)
+				- agenda = locals.agendas[i]
+				a(href="/agendas/#{agenda.key}")= agenda.title
+				br
 		p 
 			a.btn.btn-lg.btn-primary(href="/agendas/new") Create a new agenda &raquo;

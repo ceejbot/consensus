@@ -130,6 +130,12 @@ app.get('/agendas/new', requireAuthedUser, routes.agendaNewGet);
 app.post('/agendas/new', requireAuthedUser, routes.agendaNewPost);
 app.get('/agendas/:id', routes.agenda);
 
+app.get('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewGet);
+app.post('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewPost);
+app.get('/topics/:tid', routes.topic);
+app.post('/topics/:tid/vote', requireAuthedUser, routes.topicVotePost);
+
+
 app.get('/ping', function(request, response)
 {
 	var health =

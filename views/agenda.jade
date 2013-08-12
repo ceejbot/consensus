@@ -6,3 +6,19 @@ block content
 		small owned by #{agenda.owner_id}
 
 	.well!= description
+
+	- if (agenda.topics.length > 0)
+		- for (var i = 0; i < agenda.topics.length; i++)
+			- topic = agenda.topics[i]
+				a(href="/topics/#{topic}")= topic
+				br
+	- else
+		p This meeting has no open topics.
+
+	- if (locals.authed_user)
+		p 
+			a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
+	- else
+		p Log in to add topics or vote on proposals.
+
+	p Link to closed topics.
