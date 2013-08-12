@@ -11,17 +11,19 @@ block content
 		.
 	- if (locals.authed_user)
 		p
-			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/yes")
+			a.btn.btn-large(href="/topics/#{topic.key}/vote/yes", class=yes_class)
 				i.icon-large.icon-thumbs-up
 				| &nbsp; Yes 
 			&nbsp;
-			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/no")
+			a.btn.btn-large(href="/topics/#{topic.key}/vote/no", class=no_class)
 				i.icon-large.icon-thumbs-down
 				| &nbsp; No
 
 			&nbsp;
-			a.btn.btn-large.btn-default(href="/topics/#{topic.key}/vote/flag")
+			a.btn.btn-large(href="/topics/#{topic.key}/vote/flag", class=flag_class)
 				i.icon-large.icon-warning-sign
 				| &nbsp; Inappropriate
 
-	p Voting report will go here.
+	p Current tally: 
+		b= topic.tally
+		.

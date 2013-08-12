@@ -3,6 +3,7 @@ var
 	requester = require('request'),
 	Agenda    = require('../lib/Agenda'),
 	Topic     = require('../lib/Topic'),
+	Vote      = require('../lib/Vote'),
 	marked    = require('marked')
 	;
 
@@ -64,36 +65,39 @@ exports.signin = function(request, response)
 		}
 		else
 		{
-			request.app.logger.error('persona verifier did not succeed:', (verified.reason || verified.error));
+			request.app.logger.error('persona verifier failed:', (verified.reason || verified.error));
 		}
 	});
 };
 
 exports.signout = function(request, response)
 {
-	request.app.logger.info('/signout');
 	request.session.delAll();
-	response.redirect('/');
 };
 
 exports.agenda = function(request, response)
 {
-	Agenda.get(request.params.id, function(err, agenda)
-	{
-		if (err)
-		{
-			request.flash('error', 'That agenda doesn\'t exist.');
-			response.redirect('/');
-			return;
-		}
+	var locals = {};
 
-		response.render('agenda',
-		{
-			agenda: agenda,
-			title: agenda.title,
-			description:  marked(agenda.description)
-		});
-	});
+	Agenda.fetch(request.params.id)
+	.then(function(agenda)
+	{
+		locals.agenda = agenda;
+		locals.title = agenda.title;
+		locals.description = marked(agenda.description);
+
+		return agenda.topics();
+	})
+	.then(function(topics)
+	{
+		locals.agenda.topics = topics;
+		response.render('agenda', locals);
+	})
+	.fail(function(err)
+	{
+		request.flash('error', 'That agenda doesn\'t exist.');
+		response.redirect('/');
+	}).done();
 };
 
 exports.agendaNewGet = function(request, response)
@@ -126,6 +130,9 @@ exports.agendaNewPost = function(request, response)
 
 exports.topic = function(request, response)
 {
+	var owner = response.locals.authed_user;
+	var locals = {};
+
 	Topic.get(request.params.tid, function(err, topic)
 	{
 		if (err)
@@ -144,16 +151,60 @@ exports.topic = function(request, response)
 			return;
 		}
 
-		Agenda.get(topic.agenda_id, function(err, agenda)
+		locals.topic = topic;
+		locals.title = topic.title;
+		locals.description =  marked(topic.description);
+		locals.yes_class = 'btn-default';
+		locals.no_class = 'btn-default';
+		locals.flag_class = 'btn-default';
+
+		// TODO clean up
+		if (owner)
 		{
-			response.render('topic',
+			Vote.fetchFor(topic, owner)
+			.then(function(vote)
 			{
-				agenda: agenda,
-				topic: topic,
-				title: topic.title,
-				description:  marked(topic.description)
-			});
-		});
+				locals.vote = vote;
+
+				if (vote)
+				{
+					switch (vote.state)
+					{
+					case 'yea': locals.yes_class = 'btn-success'; break;
+					case 'nay': locals.no_class = 'btn-success'; break;
+					case 'flag': locals.flag_class = 'btn-danger'; break;
+					}
+				}
+
+				return Agenda.fetch(topic.agenda_id);
+			})
+			.then(function(agenda)
+			{
+				locals.agenda = agenda;
+				response.render('topic', locals);
+			})
+			.fail(function(err)
+			{
+				response.app.logger.error(err);
+				request.flash('error', err.message);
+				response.redirect('/');
+			}).done();
+		}
+		else
+		{
+			Agenda.fetch(topic.agenda_id)
+			.then(function(agenda)
+			{
+				locals.agenda = agenda;
+				response.render('topic', locals);
+			})
+			.fail(function(err)
+			{
+				response.app.logger.error(err);
+				request.flash('error', err.message);
+				response.redirect('/');
+			}).done();
+		}
 	});
 };
 
@@ -173,7 +224,7 @@ exports.topicNewGet = function(request, response)
 		{
 			title: 'New topic',
 			agenda: agenda
-		}
+		};
 		response.render('topic-edit', locals);
 	});
 };
@@ -181,7 +232,6 @@ exports.topicNewGet = function(request, response)
 exports.topicNewPost = function(request, response)
 {
 	var aid = request.params.id;
-	var topic;
 
 	Agenda.get(aid, function(err, agenda)
 	{
@@ -202,12 +252,7 @@ exports.topicNewPost = function(request, response)
 		};
 
 		Topic.create(opts)
-		.then(function(newtopic)
-		{
-			topic = newtopic;
-			return agenda.addTopic(topic);
-		})
-		.then(function()
+		.then(function(topic)
 		{
 			request.flash('success', 'Topic created.');
 			response.redirect('/topics/' + topic.key);
@@ -228,6 +273,52 @@ exports.topicNewPost = function(request, response)
 
 exports.topicVotePost = function(request, response)
 {
+	var voter = response.locals.authed_user;
+	var topic_id = request.params.tid;
+	var vote = request.params.vote;
+
+	var opts =
+	{
+		owner: voter,
+		state: vote,
+	};
+
+	Topic.fetch(topic_id)
+	.then(function(topic)
+	{
+		opts.topic = topic;
+		return Vote.create(opts);
+	})
+	.then(function(vote)
+	{
+		return topic.recordVote(vote.state);
+	})
+	.then(function()
+	{
+		request.flash('success', 'Your vote has been recorded.');
+		response.redirect('/topics/' + topic_id);
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/topics/' + topic_id);
+	}).done();
+};
+
+exports.settings = function(request, response)
+{
+	response.render('settings',
+	{
+		person: request.locals.authed_user,
+		title: 'Your account'
+	});
+};
+
+exports.settingsPost = function(request, response)
+{
 	// TODO
+	var person = request.locals.authed_user;
+
 };
 

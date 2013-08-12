@@ -6,7 +6,7 @@ block content
 		.
 	form.col-10(method="POST", action="/agendas/#{agenda.key}/topics/new")
 		.form-group
-			input.form-control.input-lg(type="text", placeholder="Title", name="ititle") #{locals.ititle}
+			input.form-control.input-lg(type="text", placeholder="Title", name="ititle", value="#{locals.ititle}")
 			span.help-block A concise summary of your topic.
 		.form-group
 			textarea.form-control(rows='5', name="idesc", placeholder="More about your topic (optional)")

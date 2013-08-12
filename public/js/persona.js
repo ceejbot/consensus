@@ -3,13 +3,10 @@ navigator.id.watch(
 	loggedInUser: authed_user,
 	onlogin: function(assertion)
 	{
-		// A user has logged in! Here you need to:
-		// 1. Send the assertion to your backend for verification and to create a session.
-		// 2. Update your UI.
 		$.ajax(
 		{
 			type: 'POST',
-			url: '/auth/signin', // This is a URL on your website.
+			url: '/auth/signin',
 			data: { assertion: assertion },
 			success: function(res, status, xhr)
 			{
@@ -31,7 +28,7 @@ navigator.id.watch(
 		{
 			type: 'POST',
 			url: '/auth/signout',
-			success: function(res, status, xhr) { window.location.reload(); },
+			success: function(res, status, xhr) { window.location.href = '/'; },
 			error: function(xhr, status, err) { console.log("Logout failure: " + err); }
 		});
 	}

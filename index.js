@@ -125,16 +125,19 @@ if ('development' == app.get('env'))
 
 app.get('/', routes.index);
 app.post('/auth/signin', routes.signin);
-app.post('/auth/signout', routes.signin);
+app.post('/auth/signout', routes.signout);
+
+app.get('/agendas/:id', routes.agenda);
 app.get('/agendas/new', requireAuthedUser, routes.agendaNewGet);
 app.post('/agendas/new', requireAuthedUser, routes.agendaNewPost);
-app.get('/agendas/:id', routes.agenda);
 
+app.get('/topics/:tid', routes.topic);
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewGet);
 app.post('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewPost);
-app.get('/topics/:tid', routes.topic);
 app.post('/topics/:tid/vote/:vote', requireAuthedUser, routes.topicVotePost);
 
+app.get('/settings', requireAuthedUser, routes.settings);
+app.post('/settings', requireAuthedUser, routes.settingsPost);
 
 app.get('/ping', function(request, response)
 {

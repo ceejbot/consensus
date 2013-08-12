@@ -10,7 +10,7 @@ block content
 			p
 				a.btn.btn-primary.btn-lg(href="") Sign in with Persona
 	- else
-		- if (locals.agendas.length === 0)
+		- if (!locals.agendas || locals.agendas.length === 0)
 			p No meetings are seeking your consensus today.
 		- else
 			- for (var i = 0; i < locals.agendas.length; i++)

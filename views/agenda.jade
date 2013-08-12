@@ -10,7 +10,7 @@ block content
 	- if (agenda.topics.length > 0)
 		- for (var i = 0; i < agenda.topics.length; i++)
 			- topic = agenda.topics[i]
-				a(href="/topics/#{topic}")= topic
+				a(href="/topics/#{topic.key}")= topic.title
 				br
 	- else
 		p This meeting has no open topics.
