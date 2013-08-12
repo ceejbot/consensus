@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	form.col-10(method="POST", action="/agendas/new")
+		.form-group
+			input.form-control.input-lg(type="text", placeholder="Title", name="ititle") #{locals.ititle}
+			span.help-block Name of your meeting or the agenda title.
+		.form-group
+			textarea.form-control(rows='5', name="idesc", placeholder="Description of the meeting.")
+				= locals.idesc
+			span.help-block You can use Markdown or html in the description.
+		.form-group
+			button.btn.btn-default(type="cancel") Cancel 
+			&nbsp;
+			button.btn.btn-primary(type="submit") Save

@@ -6,11 +6,11 @@ html
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		link(rel='stylesheet', href='/css/bootstrap.min.css', media="screen")
 	body
-		.navbar
+		.navbar.navbar-inverse.navbar-static-top
 			a.navbar-brand(href="#") Consensus
 			ul.nav.navbar-nav
 				li.active
-					a(href="#") Home
+					a(href="/") Home
 				- if (locals.authed_user !== null)
 					li
 						a(href="/agendas/closed") History

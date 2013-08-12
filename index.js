@@ -73,7 +73,7 @@ function requireAuthedUser(request, response, next)
 	request.app.logger.debug('requireAuthedUser did not find a user');
 	response.cookie('destination', request.originalUrl);
 	request.flash('info', 'You must log in before you can continue');
-	response.redirect('/login');
+	response.redirect('/');
 }
 
 // ----------------------------------------------------------------------
@@ -126,6 +126,9 @@ if ('development' == app.get('env'))
 app.get('/', routes.index);
 app.post('/auth/signin', routes.signin);
 app.post('/auth/signout', routes.signin);
+app.get('/agendas/new', requireAuthedUser, routes.agendaNewGet);
+app.post('/agendas/new', requireAuthedUser, routes.agendaNewPost);
+app.get('/agendas/:id', routes.agenda);
 
 app.get('/ping', function(request, response)
 {
