@@ -134,16 +134,9 @@ exports.topic = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Topic.get(request.params.tid, function(err, topic)
+	Topic.fetch(request.params.tid)
+	.then(function(topic)
 	{
-		if (err)
-		{
-			request.app.logger.error('error fetching topic: ' + request.params.id, err);
-			request.flash('error', err.message);
-			response.redirect('/');
-			return;
-		}
-
 		if (!topic || (Array.isArray(topic) && topic.length === 0))
 		{
 			request.app.logger.info('topic not found: ' + request.params.id, err);
@@ -158,57 +151,41 @@ exports.topic = function(request, response)
 		locals.yes_class = 'btn-default';
 		locals.no_class = 'btn-default';
 		locals.flag_class = 'btn-default';
-		locals.has_voted = false;
 
-		// TODO clean up
-		if (owner)
+		return topic.voters();
+	})
+	.then(function(voters)
+	{
+		locals.voters = voters;
+		return Vote.fetchFor(locals.topic, owner);
+	})
+	.then(function(vote)
+	{
+		if (vote)
 		{
-			Vote.fetchFor(topic, owner)
-			.then(function(vote)
-			{
-				locals.vote = vote;
+			locals.vote = vote;
 
-				if (vote)
-				{
-					switch (vote.state)
-					{
-					case 'yes': locals.yes_class = 'btn-success'; break;
-					case 'no': locals.no_class = 'btn-success'; break;
-					case 'flag': locals.flag_class = 'btn-danger'; break;
-					}
-					locals.has_voted = true;
-				}
+			switch (vote.state)
+			{
+			case 'yes': locals.yes_class = 'btn-success'; break;
+			case 'no': locals.no_class = 'btn-success'; break;
+			case 'flag': locals.flag_class = 'btn-danger'; break;
+			}
+		}
 
-				return Agenda.fetch(topic.agenda_id);
-			})
-			.then(function(agenda)
-			{
-				locals.agenda = agenda;
-				response.render('topic', locals);
-			})
-			.fail(function(err)
-			{
-				response.app.logger.error(err);
-				request.flash('error', err.message);
-				response.redirect('/');
-			}).done();
-		}
-		else
-		{
-			Agenda.fetch(topic.agenda_id)
-			.then(function(agenda)
-			{
-				locals.agenda = agenda;
-				response.render('topic', locals);
-			})
-			.fail(function(err)
-			{
-				response.app.logger.error(err);
-				request.flash('error', err.message);
-				response.redirect('/');
-			}).done();
-		}
-	});
+		return Agenda.fetch(locals.topic.agenda_id);
+	})
+	.then(function(agenda)
+	{
+		locals.agenda = agenda;
+		response.render('topic', locals);
+	})
+	.fail(function(err)
+	{
+		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
 };
 
 exports.topicNewGet = function(request, response)

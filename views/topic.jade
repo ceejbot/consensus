@@ -43,5 +43,11 @@ block content
 						| &nbsp; Re-open topic
 		- else
 			p This topic is closed.
+	- if (voters.length)
+		p Voters:  
+			- for (var i = 0; i < voters.length; i++)
+				= voters[i]
+				|    
+	- else
+		p No one has voted on this topic yet.			
 
-	p Voters:
