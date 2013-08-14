@@ -9,8 +9,17 @@ block content
 	p Proposed for discussion at 
 		a(href="/agendas/#{agenda.key}")= agenda.title
 		.
-	- if (locals.authed_user)
+	p Current tally: 
+		b= topic.tally
+		.
+	p state:  #{topic.owner_id}
+	- if (topic.state !== 'closed')
 		.row
+			- if (locals.authed_user && (topic.owner_id === locals.authed_user.email))
+				form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/close")
+					button.btn.btn-large.btn-default.btn-block(type="submit", value="close")
+						i.icon-large.icon-lock
+						| &nbsp; Close topic 
 			form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/yes")
 				button.btn.btn-large.btn-block(type="submit", class=yes_class, value="yes")
 					i.icon-large.icon-thumbs-up
@@ -25,7 +34,14 @@ block content
 				button.btn.btn-large.btn-block(type="submit", class=flag_class, value="flag")
 					i.icon-large.icon-warning-sign
 					| &nbsp; Inappropriate
+	- else
+		- if (locals.authed_user && (topic.owner === locals.authed_user.email))
+			p
+				form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/open")
+					button.btn.btn-large.btn-block.btn-default(type="submit", value='open')
+						i.icon-large.icon-unlock
+						| &nbsp; Re-open topic
+		- else
+			p This topic is closed.
 
-	p Current tally: 
-		b= topic.tally
-		.
+	p Voters:
