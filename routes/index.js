@@ -158,6 +158,7 @@ exports.topic = function(request, response)
 		locals.yes_class = 'btn-default';
 		locals.no_class = 'btn-default';
 		locals.flag_class = 'btn-default';
+		locals.has_voted = false;
 
 		// TODO clean up
 		if (owner)
@@ -171,10 +172,11 @@ exports.topic = function(request, response)
 				{
 					switch (vote.state)
 					{
-					case 'yea': locals.yes_class = 'btn-success'; break;
-					case 'nay': locals.no_class = 'btn-success'; break;
+					case 'yes': locals.yes_class = 'btn-success'; break;
+					case 'no': locals.no_class = 'btn-success'; break;
 					case 'flag': locals.flag_class = 'btn-danger'; break;
 					}
+					locals.has_voted = true;
 				}
 
 				return Agenda.fetch(topic.agenda_id);
@@ -274,28 +276,50 @@ exports.topicNewPost = function(request, response)
 
 exports.topicVotePost = function(request, response)
 {
-	var voter = response.locals.authed_user;
+	var owner = response.locals.authed_user;
 	var topic_id = request.params.tid;
-	var vote = request.params.vote;
+	var state = request.params.vote;
+	var vote;
+	var isUpdate = false;
 
 	var opts =
 	{
-		owner: voter,
-		state: vote,
+		owner: owner,
+		state: state,
 	};
 
 	Topic.fetch(topic_id)
 	.then(function(topic)
 	{
 		opts.topic = topic;
+		return Vote.fetchFor(topic, opts.owner);
+	})
+	.then(function(previous)
+	{
+		if (previous)
+		{
+			return opts.topic.rollback(opts.state, previous.state)
+			.then(function()
+			{
+				previous.state = opts.state;
+				return previous.saveP();
+			})
+			.then(function()
+			{
+				return previous;
+			});
+		}
+
 		return Vote.create(opts);
 	})
-	.then(function(vote)
+	.then(function(created)
 	{
-		return topic.recordVote(vote.state);
+		vote = created;
+		return opts.topic.recordVote(vote.state);
 	})
 	.then(function()
 	{
+		response.app.logger.debug('vote: ' + vote.key + ' -> ' + vote.state);
 		request.flash('success', 'Your vote has been recorded.');
 		response.redirect('/topics/' + topic_id);
 	})

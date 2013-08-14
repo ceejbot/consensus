@@ -11,18 +11,18 @@ block content
 		.
 	- if (locals.authed_user)
 		.row
-			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/yes")
-				button.btn.btn-large(type="submit", class=yes_class, value="yes")
+			form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/yes")
+				button.btn.btn-large.btn-block(type="submit", class=yes_class, value="yes")
 					i.icon-large.icon-thumbs-up
 					| &nbsp; Yes 
 				&nbsp;
-			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/no")
-				button.btn.btn-large(type="submit", class=no_class, value='no')
+			form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/no")
+				button.btn.btn-large.btn-block(type="submit", class=no_class, value='no')
 					i.icon-large.icon-thumbs-down
 					| &nbsp; No
 				&nbsp;
-			form.form-inline.col-lg-1(method="POST", action="/topics/#{topic.key}/vote/flag")
-				button.btn.btn-large(type="submit", class=flag_class, value="flag")
+			form.form-inline.col-3(method="POST", action="/topics/#{topic.key}/vote/flag")
+				button.btn.btn-large.btn-block(type="submit", class=flag_class, value="flag")
 					i.icon-large.icon-warning-sign
 					| &nbsp; Inappropriate
 
