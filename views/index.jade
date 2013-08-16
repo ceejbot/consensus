@@ -8,7 +8,7 @@ block content
 				Propose topics or questions to be discussed at your next meeting, or 
 				vote on the proposals from your colleagues.
 			p
-				a.btn.btn-primary.btn-lg(href="") Sign in with Persona
+				button.btn.btn-primary.btn-lg.signin Sign in with Persona  &raquo;
 	- else
 		- if (!locals.agendas || locals.agendas.length === 0)
 			p No meetings are seeking your consensus today.
@@ -17,5 +17,6 @@ block content
 				- agenda = locals.agendas[i]
 				a(href="/agendas/#{agenda.key}")= agenda.title
 				br
+		hr
 		p 
 			a.btn.btn-lg.btn-primary(href="/agendas/new") Create a new agenda &raquo;

@@ -1,9 +1,9 @@
-
+{
 	"dbpath": "/var/db/consensus",
 	"logging":
 	{
 		"path": "/var/log/consensus",
 		"console": false
 	},
-	"secret": "your cookie secret passphrase thingie"
+	"secrets": ["your cookie secret passphrase thingie", "which get passed to keygrip" ]
 }

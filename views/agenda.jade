@@ -4,17 +4,41 @@ block content
 	.page-header
 		h1= agenda.title
 		small owned by #{agenda.owner_id}
-
+	
 	.well!= description
 
+	- var isOwner = (agenda.owner_id === locals.authed_user.email);
 	- if (agenda.topics.length > 0)
-		- for (var i = 0; i < agenda.topics.length; i++)
-			- topic = agenda.topics[i]
-				a(href="/topics/#{topic.key}")= topic.title
-				br
+		h3 Open topics
+		table.table.table-striped
+			tr
+				th Tally
+				th Topic
+				th Proposed
+				th &nbsp;
+			- for (var i = 0; i < agenda.topics.length; i++)
+				- topic = agenda.topics[i]
+				tr
+					td
+						- if (topic.state === 'closed')
+							i.icon-large.icon-check
+						- else
+							= topic.tally
+					td
+						a(href="/topics/#{topic.key}")= topic.title
+					td= topic.proposedWhen()
+					td
+						- if (isOwner)
+							if (topic.state === 'open')
+								form.form-inline(method="POST", action="/topics/#{topic.key}/close")
+									button.btn.btn-large.btn-default(type="submit", value="close")
+										i.icon-large.icon-check
+										| &nbsp; Resolve
+
 	- else
 		p This meeting has no open topics.
 
+	hr
 	- if (locals.authed_user)
 		p 
 			a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;

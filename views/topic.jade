@@ -12,42 +12,47 @@ block content
 	p Current tally: 
 		b= topic.tally
 		.
-	p state:  #{topic.owner_id}
-	- if (topic.state !== 'closed')
-		.row
+	.row
+		- if (topic.state !== 'closed')
 			- if (locals.authed_user && (topic.owner_id === locals.authed_user.email))
-				form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/close")
-					button.btn.btn-large.btn-default.btn-block(type="submit", value="close")
-						i.icon-large.icon-lock
-						| &nbsp; Close topic 
-			form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/yes")
-				button.btn.btn-large.btn-block(type="submit", class=yes_class, value="yes")
-					i.icon-large.icon-thumbs-up
-					| &nbsp; Yes 
-				&nbsp;
-			form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/no")
-				button.btn.btn-large.btn-block(type="submit", class=no_class, value='no')
-					i.icon-large.icon-thumbs-down
-					| &nbsp; No
-				&nbsp;
-			form.form-inline.col-3(method="POST", action="/topics/#{topic.key}/vote/flag")
-				button.btn.btn-large.btn-block(type="submit", class=flag_class, value="flag")
-					i.icon-large.icon-warning-sign
-					| &nbsp; Inappropriate
-	- else
-		- if (locals.authed_user && (topic.owner === locals.authed_user.email))
-			p
-				form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/open")
-					button.btn.btn-large.btn-block.btn-default(type="submit", value='open')
-						i.icon-large.icon-unlock
-						| &nbsp; Re-open topic
+				.col-md-2
+					form.form-inline(method="POST", action="/topics/#{topic.key}/close")
+						button.btn.btn-large.btn-default.btn-block(type="submit", value="close")
+							i.icon-large.icon-lock
+							| &nbsp; Close topic 
+			.col-md-2
+				form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/yes")
+					button.btn.btn-large.btn-block(type="submit", class=yes_class, value="yes")
+						i.icon-large.icon-thumbs-up
+						| &nbsp; Yes 
+					&nbsp;
+			.col-md-2
+				form.form-inline(method="POST", action="/topics/#{topic.key}/vote/no")
+					button.btn.btn-large.btn-block(type="submit", class=no_class, value='no')
+						i.icon-large.icon-thumbs-down
+						| &nbsp; No
+					&nbsp;
+			.col-md-3
+				form.form-inline(method="POST", action="/topics/#{topic.key}/vote/flag")
+					button.btn.btn-large.btn-block(type="submit", class=flag_class, value="flag")
+						i.icon-large.icon-warning-sign
+						| &nbsp; Inappropriate
 		- else
-			p This topic is closed.
-	- if (voters.length)
-		p Voters:  
+			- if (locals.authed_user && (topic.owner === locals.authed_user.email))
+				.col-md-3
+					form.form-inline(method="POST", action="/topics/#{topic.key}/open")
+						button.btn.btn-large.btn-block.btn-default(type="submit", value='open')
+							i.icon-large.icon-unlock
+							| &nbsp; Re-open topic
+			- else
+				p This topic is closed.
+	.row
+		- if (voters.length)
+			h4 Voters:  
 			- for (var i = 0; i < voters.length; i++)
-				= voters[i]
-				|    
-	- else
-		p No one has voted on this topic yet.			
+				.col-md-3
+					a(href="mailto:#{voters[i]}")= voters[i]
+					|    
+		- else
+			p No one has voted on this topic yet.			
 

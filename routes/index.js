@@ -129,7 +129,7 @@ exports.agendaNewPost = function(request, response)
 	}).done();
 };
 
-exports.topic = function(request, response)
+exports.topic = function topic(request, response)
 {
 	var owner = response.locals.authed_user;
 	var locals = {};
@@ -188,7 +188,7 @@ exports.topic = function(request, response)
 	}).done();
 };
 
-exports.topicNewGet = function(request, response)
+exports.newTopic = function newTopic(request, response)
 {
 	var aid = request.params.id;
 	Agenda.get(aid, function(err, agenda)
@@ -209,7 +209,7 @@ exports.topicNewGet = function(request, response)
 	});
 };
 
-exports.topicNewPost = function(request, response)
+exports.handleNewTopic = function handleNewTopic(request, response)
 {
 	var aid = request.params.id;
 
@@ -251,7 +251,69 @@ exports.topicNewPost = function(request, response)
 	});
 };
 
-exports.topicVotePost = function(request, response)
+exports.editTopic = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var locals = {};
+
+	Topic.fetch(request.params.tid)
+	.then(function(topic)
+	{
+		if (!topic || (Array.isArray(topic) && topic.length === 0))
+		{
+			request.app.logger.info('topic not found: ' + request.params.id, err);
+			request.flash('error', 'That topic doesn\'t exist.');
+			response.redirect('/');
+			return;
+		}
+
+		if (topic.owner_id !== owner.email)
+		{
+			request.flash('error', 'You are not authorized to edit that topic.');
+			response.redirect('/topic/' + topic.key);
+			return;
+		}
+
+		locals.topic = topic;
+		locals.ititle = topic.title;
+		locals.idesc =  topic.description;
+
+		return Agenda.fetch(locals.topic.agenda_id);
+	})
+	.then(function(agenda)
+	{
+		locals.agenda = agenda;
+		response.render('topic-edit', locals);
+	})
+	.fail(function(err)
+	{
+		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+
+};
+
+exports.handleEditTopic = function(request, response)
+{
+	Topic.fetch(request.params.tid)
+	.then(function()
+	{
+
+	})
+	.fail(function(err)
+	{
+		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+
+	request.flash('error', 'topic editing not implemented yet');
+	response.redirect('/');
+};
+
+
+exports.handleTopicVote = function handleTopicVote(request, response)
 {
 	var owner = response.locals.authed_user;
 	var topic_id = request.params.tid;
@@ -306,6 +368,47 @@ exports.topicVotePost = function(request, response)
 		request.flash('error', err.message);
 		response.redirect('/topics/' + topic_id);
 	}).done();
+};
+
+exports.closeTopic = function(request, response)
+{
+	var person = response.locals.authed_user;
+	var topic_id = request.params.tid;
+
+	var opts = { };
+
+	Topic.fetch(topic_id)
+	.then(function(topic)
+	{
+		opts.topic = topic;
+		return Agenda.fetch(topic.agenda_id);
+	})
+	.then(function(agenda)
+	{
+		if ((agenda.owner_id !== person.email) && (topic.owner_id !== person.email))
+		{
+			request.flash('error', 'You are not authorized to close that topic.');
+			response.redirect('/topic/' + opts.topic.key);
+			return;
+		}
+
+		opts.topic.state = 'closed';
+		opts.topic.modified = Date.now();
+		return opts.topic.saveP();
+	})
+	.then(function()
+	{
+		response.app.logger.debug('topic: ' + opts.topic.key + ' closed by ' + person.email);
+		request.flash('success', 'That topic has been marked as closed.');
+		response.redirect('/agendas/' + opts.topic.agenda_id);
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/topics/' + topic_id);
+	}).done();
+
 };
 
 exports.settings = function(request, response)

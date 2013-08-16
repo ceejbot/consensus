@@ -7,22 +7,29 @@ html
 		link(rel='stylesheet', href='/css/bootstrap.min.css', media="screen")
 		link(href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css", rel="stylesheet")
 	body
-		.navbar.navbar-inverse.navbar-static-top
-			a.navbar-brand(href="#") Consensus
-			ul.nav.navbar-nav
-				li.active
-					a(href="/") Home
+		nav.navbar.navbar-inverse.navbar-static-top(role="navigation")
+			.navbar-header
+				button.navbar-toggle(type="button", data-toggle="collapse", data-target=".collapsing-nav")
+					span.src-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(href="#") Consensus
+			.collapse.navbar-collapse.collapsing-nav
+				ul.nav.navbar-nav
+					li.active
+						a(href="/") Home
+					- if (locals.authed_user !== null)
+						li
+							a(href="/agendas/closed") History
+						li
+							a(href="/agendas/relevant") Your agendas
+						li
+							a(href="/settings") #{locals.authed_user.email}
 				- if (locals.authed_user !== null)
-					li
-						a(href="/agendas/closed") History
-					li
-						a(href="/agendas/relevant") Your agendas
-					li
-						a(href="/settings") #{locals.authed_user.email}
-			- if (locals.authed_user !== null)
-				button.pull-right.btn.btn-default.navbar-btn#signout(type="button") Sign out
-			- else
-				button.pull-right.btn.btn-default.navbar-btn#signin(type="button") Sign in
+					button.btn.btn-default.navbar-btn#signout(type="button") Sign out
+				- else
+					button.btn.btn-default.navbar-btn.signin(type="button") Sign in
 		- if (locals.flash.info.length)
 			.container
 				.alert.alert-info.col-8-lg

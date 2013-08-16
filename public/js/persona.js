@@ -28,7 +28,13 @@ navigator.id.watch(
 		{
 			type: 'POST',
 			url: '/auth/signout',
-			success: function(res, status, xhr) { window.location.href = '/'; },
+			success: function(res, status, xhr)
+			{
+				if (window.location.href === '/')
+					window.location.reload();
+				else
+					window.location.href = '/';
+			},
 			error: function(xhr, status, err) { console.log("Logout failure: " + err); }
 		});
 	}
@@ -36,7 +42,7 @@ navigator.id.watch(
 
 $(document).ready(function()
 {
-	$('#signin').click(function()
+	$('.signin').click(function()
 	{
 		navigator.id.request({siteName: 'Consensus'});
 	});

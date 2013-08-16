@@ -14,16 +14,20 @@ app.http().io();
 
 var appname = 'consensus';
 
-app.SESSION_TTL = 1000 * 60 * 60 * 24 * 365; // 1 year in milliseconds, TODO config
+app.SESSION_TTL = 60 * 60 * 24 * 365; // 1 year in seconds
 
 var config = fs.readFileSync('./config.js');
 if (config.length)
 	config = JSON.parse(config);
 
-// CONFIGURATION???!!!!
 var controller = new Controller(config);
 app.controller = controller;
-var sessiondb = require('level-session')(path.join(config.dbpath, 'sessions.db'));
+var sessiondb = require('level-session')(
+{
+	location: path.join(config.dbpath, 'sessions.db'),
+	expire:   app.SESSION_TTL,
+	keys:     config.secrets
+});
 
 // ----------------------------------------------------------------------
 // middleware
@@ -131,9 +135,12 @@ app.get('/agendas/new', requireAuthedUser, routes.agendaNewGet);
 app.post('/agendas/new', requireAuthedUser, routes.agendaNewPost);
 app.get('/agendas/:id', routes.agenda);
 
-app.get('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewGet);
-app.post('/agendas/:id/topics/new', requireAuthedUser, routes.topicNewPost);
-app.post('/topics/:tid/vote/:vote', requireAuthedUser, routes.topicVotePost);
+app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);
+app.post('/agendas/:id/topics/new', requireAuthedUser, routes.handleNewTopic);
+app.post('/topics/:tid/vote/:vote', requireAuthedUser, routes.handleTopicVote);
+app.post('/topics/:tid/close', routes.closeTopic);
+app.get('/topics/:tid/edit', routes.editTopic);
+app.post('/topics/:tid/edit', routes.handleEditTopic);
 app.get('/topics/:tid', routes.topic);
 
 app.get('/settings', requireAuthedUser, routes.settings);
