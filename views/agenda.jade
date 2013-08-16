@@ -1,5 +1,23 @@
 extends layout
 
+
+mixin topicRow(topic)
+	tr
+		td
+			- if (topic.state === 'closed')
+				i.icon-large.icon-check
+			- else
+				= topic.tally
+		td
+			a(href="/topics/#{topic.key}")= topic.title
+		td= topic.proposedWhen()
+		td
+			- if (isOwner)
+				form.form-inline(method="POST", action="/topics/#{topic.key}/close")
+					button.btn.btn-large.btn-default(type="submit", value="close")
+						i.icon-large.icon-check
+						| &nbsp; Resolve
+
 block content
 	.page-header
 		h1= agenda.title
@@ -7,33 +25,24 @@ block content
 	
 	.well!= description
 
-	- var isOwner = (agenda.owner_id === locals.authed_user.email);
+	- var isOwner = locals.authed_user && (agenda.owner_id === locals.authed_user.email);
 	- if (agenda.topics.length > 0)
-		h3 Open topics
-		table.table.table-striped
+		table.table
+			tr
+				td(colspan=4)
+					h3 Open topics
 			tr
 				th Tally
 				th Topic
 				th Proposed
 				th &nbsp;
-			- for (var i = 0; i < agenda.topics.length; i++)
-				- topic = agenda.topics[i]
-				tr
-					td
-						- if (topic.state === 'closed')
-							i.icon-large.icon-check
-						- else
-							= topic.tally
-					td
-						a(href="/topics/#{topic.key}")= topic.title
-					td= topic.proposedWhen()
-					td
-						- if (isOwner)
-							if (topic.state === 'open')
-								form.form-inline(method="POST", action="/topics/#{topic.key}/close")
-									button.btn.btn-large.btn-default(type="submit", value="close")
-										i.icon-large.icon-check
-										| &nbsp; Resolve
+			- each topic in agenda.topics.open
+				+topicRow(topic)
+			tr
+				td(colspan=4)
+					h3 Closed topics
+			- each topic in agenda.topics.closed
+				+topicRow(topic)
 
 	- else
 		p This meeting has no open topics.
@@ -44,5 +53,3 @@ block content
 			a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
 	- else
 		p Log in to add topics or vote on proposals.
-
-	p Link to closed topics.

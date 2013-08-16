@@ -86,7 +86,7 @@ exports.agenda = function(request, response)
 		locals.title = agenda.title;
 		locals.description = marked(agenda.description);
 
-		return agenda.topics();
+		return agenda.fetchTopics();
 	})
 	.then(function(topics)
 	{

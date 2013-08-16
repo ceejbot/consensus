@@ -10,10 +10,7 @@ navigator.id.watch(
 			data: { assertion: assertion },
 			success: function(res, status, xhr)
 			{
-				if (res.page)
-					window.location.href = res.page;
-				else
-					window.location.reload();
+				window.location.reload();
 			},
 			error: function(xhr, status, err)
 			{
