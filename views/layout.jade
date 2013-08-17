@@ -1,3 +1,5 @@
+mixin personLink(person)
+	a(href="/u/#{person.key")= person.displayName()
 doctype 5
 html
 	head
@@ -21,13 +23,17 @@ html
 						a(href="/") Home
 					- if (locals.authed_user !== null)
 						li
-							a(href="/agendas/relevant") Your agendas
+							a(href="/u/#{authed_user.email}")= authed_user.displayName()
 						li
-							a(href="/settings") #{locals.authed_user.email}
+							a(href="/settings") Settings
 				- if (locals.authed_user !== null)
-					button.btn.btn-default.navbar-btn#signout(type="button") Sign out
+					button.btn.btn-default.navbar-btn#signout(type="button") 
+						i.icon-signout
+						|  Sign out
 				- else
-					button.btn.btn-default.navbar-btn.signin(type="button") Sign in
+					button.btn.btn-default.navbar-btn.signin(type="button") 
+						i.icon-signin 
+						|  Sign in
 		- if (locals.flash.error)
 			.container
 				.alert.alert-danger.col-8-lg

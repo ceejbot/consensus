@@ -175,7 +175,7 @@ app.post('/auth/signout', routes.signout);
 
 app.get('/agendas/new', requireAuthedUser, routes.newAgenda);
 app.post('/agendas/new', requireAuthedUser, routes.handleNewAgenda);
-app.get('/agendas/relevant', routes.relevantAgendas);
+app.get('/agendas/relevant', requireAuthedUser, routes.relevantAgendas);
 app.get('/agendas/:id', routes.agenda);
 
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);
@@ -186,6 +186,7 @@ app.get('/topics/:tid/edit', routes.editTopic);
 app.post('/topics/:tid/edit', routes.handleEditTopic);
 app.get('/topics/:tid', routes.topic);
 
+app.get('/u/:uid', routes.profile);
 app.get('/settings', requireAuthedUser, routes.settings);
 app.post('/settings', requireAuthedUser, routes.handleSettings);
 

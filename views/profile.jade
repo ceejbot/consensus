@@ -1,0 +1,30 @@
+extends layout
+
+mixin agendaRow(agenda)
+	tr
+		td
+			a(href="/agendas/#{agenda.key}")= agenda.title
+		td
+			a(href="mailto:#{agenda.owner_id}")= agenda.owner_id
+
+block content
+	- if (person.avatar)
+		.row
+			.col-xs-3
+				img.img-responsive(src="#{person.avatar}")
+			.col-xs-9
+				h2= person.displayName()
+				p= person.email
+				!= description
+	- else
+		h2= person.displayName()
+		p= person.email
+		!= description
+	.clearfix
+	h3 Agendas of interest
+	table.table
+		tr
+			th Name
+			th Owner
+		- each agenda in locals.agendas
+			+agendaRow(agenda)

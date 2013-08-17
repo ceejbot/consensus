@@ -1,8 +1,14 @@
-consensus
-=========
+# Consensus
 
 Imagine a Google Moderator that didn't make you tear your hair out. That's Consensus.
 
+## What's that when it's at home?
+
+[Google Moderator](https://www.google.com/moderator/) is a tool for counting votes on topics. The intent of their tool is to count lots of votes from lots of people for giant events. I hear their own company meeting is an intended use. Sadly, smaller companies also sometimes use it as a convenient voting tool. That's where its typically horrible Google user interface starts to truly hurt.
+
+I wanted a tool for counting votes for much smaller audiences, where topic discovery was much easier. Well, possible.
+
+### 
 
 ## Operational requirements
 

@@ -4,6 +4,7 @@ var
 	Agenda    = require('../lib/Agenda'),
 	Topic     = require('../lib/Topic'),
 	Vote      = require('../lib/Vote'),
+	Person    = require('../lib/Person'),
 	marked    = require('marked')
 	;
 
@@ -78,6 +79,12 @@ exports.relevantAgendas = function relevantAgendas(request, response)
 {
 	var locals = {};
 	var owner = response.locals.authed_user;
+
+	if (!owner)
+	{
+		response.redirect('/');
+		return;
+	}
 
 	owner.fetchAgendas()
 	.then(function(agendas)
@@ -473,6 +480,37 @@ exports.handleSettings = function(request, response)
 		response.app.logger.error(err);
 		request.flash('error', err.message);
 		response.redirect('/settings');
+	}).done();
+};
+
+exports.profile = function(request, response)
+{
+	var locals = {};
+	var uid = request.params.uid;
+
+	Person.personByEmail(uid)
+	.then(function(person)
+	{
+		if (!person)
+		{
+			request.flash('warning', 'Profile for #{uid} not found.');
+			response.redirect('/');
+		}
+
+		locals.person = person;
+		locals.description =  marked(person.description);
+		return person.fetchAgendas();
+	})
+	.then(function(agendas)
+	{
+		locals.agendas = agendas;
+		response.render('profile', locals);
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
 	}).done();
 };
 
