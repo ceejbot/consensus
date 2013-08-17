@@ -1,11 +1,11 @@
 var
 	bunyan     = require('bunyan'),
 	express    = require('express.io'),
-	flash      = require('connect-flash'),
 	fs         = require('fs'),
 	http       = require('http'),
 	path       = require('path'),
 	routes     = require('./routes'),
+	util       = require('util'),
 	Controller = require('./lib/controller')
 	;
 
@@ -32,18 +32,59 @@ var sessiondb = require('level-session')(
 // ----------------------------------------------------------------------
 // middleware
 
+function flash(request, response, next)
+{
+	request.flash = function(type, message)
+	{
+		request.session.get('flash', function(err, flashmess)
+		{
+			flashmess = flashmess || {};
+
+			if (arguments.length > 2 && format)
+			{
+				var args = Array.prototype.slice.call(arguments, 1);
+				message = util.format.apply(undefined, args);
+				(flashmess[type] = flashmess[type] || []).push(message);
+			}
+			else if (Array.isArray(message))
+			{
+				message.forEach(function(val)
+				{
+					(flashmess[type] = flashmess[type] || []).push(val);
+				});
+			}
+			else
+			{
+				(flashmess[type] = flashmess[type] || []).push(message);
+			}
+
+			request.session.set('flash', flashmess);
+		});
+	};
+
+	next();
+}
+
 function initializePageLocals(request, response, next)
 {
 	request.session.get('user_id', function(err, user_id)
 	{
 		response.locals.user_id = user_id;
-		response.locals.flash = {};
-		response.locals.flash.info = request.flash('info');
-		response.locals.flash.error = request.flash('error');
-		response.locals.flash.success = request.flash('success');
-		response.locals.flash.warning = request.flash('warning');
 
-		next();
+		request.session.get('flash', function(err, flash)
+		{
+			flash = flash || {};
+			response.locals.flash = {};
+			response.locals.flash.info = flash['info'];
+			response.locals.flash.error = flash['error'];
+			response.locals.flash.success = flash['success'];
+			response.locals.flash.warning = flash['warning'];
+
+			request.session.set('flash', {}, function(err)
+			{
+				next();
+			});
+		});
 	});
 }
 
@@ -113,9 +154,9 @@ app.use(express.logger({stream: logstream, format: 'tiny'}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(flash());
 app.use(express.cookieParser(process.env.NOMNOMNOM));
 app.use(sessiondb);
+app.use(flash);
 app.use(initializePageLocals);
 app.use(authenticatedUser);
 app.use(app.router);
@@ -131,8 +172,8 @@ app.get('/', routes.index);
 app.post('/auth/signin', routes.signin);
 app.post('/auth/signout', routes.signout);
 
-app.get('/agendas/new', requireAuthedUser, routes.agendaNewGet);
-app.post('/agendas/new', requireAuthedUser, routes.agendaNewPost);
+app.get('/agendas/new', requireAuthedUser, routes.newAgenda);
+app.post('/agendas/new', requireAuthedUser, routes.handleNewAgenda);
 app.get('/agendas/:id', routes.agenda);
 
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);
@@ -144,7 +185,7 @@ app.post('/topics/:tid/edit', routes.handleEditTopic);
 app.get('/topics/:tid', routes.topic);
 
 app.get('/settings', requireAuthedUser, routes.settings);
-app.post('/settings', requireAuthedUser, routes.settingsPost);
+app.post('/settings', requireAuthedUser, routes.handleSettings);
 
 app.get('/ping', function(request, response)
 {

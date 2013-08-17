@@ -14,14 +14,12 @@ html
 					span.icon-bar
 					span.icon-bar
 					span.icon-bar
-				a.navbar-brand(href="#") Consensus
+				a.navbar-brand(href="/") Consensus
 			.collapse.navbar-collapse.collapsing-nav
 				ul.nav.navbar-nav
 					li.active
 						a(href="/") Home
 					- if (locals.authed_user !== null)
-						li
-							a(href="/agendas/closed") History
 						li
 							a(href="/agendas/relevant") Your agendas
 						li
@@ -30,19 +28,25 @@ html
 					button.btn.btn-default.navbar-btn#signout(type="button") Sign out
 				- else
 					button.btn.btn-default.navbar-btn.signin(type="button") Sign in
-		- if (locals.flash.info.length)
-			.container
-				.alert.alert-info.col-8-lg
-					button.close(type="button", data-dismiss="alert") &times;
-					- for (var i = 0; i < locals.flash.info.length; i++)
-						= locals.flash.info[i]
-		- if (locals.flash.error.length)
+		- if (locals.flash.error)
 			.container
 				.alert.alert-danger.col-8-lg
 					button.close(type="button", data-dismiss="alert") &times;
 					- for (var i = 0; i < locals.flash.error.length; i++)
 						= locals.flash.error[i]
-		- if (locals.flash.success.length)
+		- if (locals.flash.warning)
+			.container
+				.alert.alert-warn.col-8-lg
+					button.close(type="button", data-dismiss="alert") &times;
+					- for (var i = 0; i < locals.flash.warning.length; i++)
+						= locals.flash.warning[i]
+		- if (locals.flash.info)
+			.container
+				.alert.alert-info.col-8-lg
+					button.close(type="button", data-dismiss="alert") &times;
+					- for (var i = 0; i < locals.flash.info.length; i++)
+						= locals.flash.info[i]
+		- if (locals.flash.success)
 			.container
 				.alert.alert-success.col-8-lg
 					button.close(type="button", data-dismiss="alert") &times;

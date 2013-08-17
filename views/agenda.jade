@@ -1,6 +1,5 @@
 extends layout
 
-
 mixin topicRow(topic)
 	tr
 		td
@@ -20,8 +19,9 @@ mixin topicRow(topic)
 
 block content
 	.page-header
-		h1= agenda.title
-		small owned by #{agenda.owner_id}
+		h1= agenda.title 
+			br
+			small &nbsp; run by #{agenda.owner_id}
 	
 	.well!= description
 
@@ -38,11 +38,12 @@ block content
 				th &nbsp;
 			- each topic in agenda.topics.open
 				+topicRow(topic)
-			tr
-				td(colspan=4)
-					h3 Closed topics
-			- each topic in agenda.topics.closed
-				+topicRow(topic)
+			- if (agenda.topics.closed && agenda.topics.closed.length > 0)
+				tr
+					td(colspan=4)
+						h3 Closed topics
+				- each topic in agenda.topics.closed
+					+topicRow(topic)
 
 	- else
 		p This meeting has no open topics.

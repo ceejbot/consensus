@@ -1,22 +1,33 @@
 extends layout
 
+mixin agendaRow(agenda)
+	tr
+		td
+			a(href="/agendas/#{agenda.key}")= agenda.title
+		td
+			a(href="mailto:#{agenda.owner_id}")= agenda.owner_id
+
 block content
 	- if (!locals.authed_user)
 		.jumbotron
-			h1 Consensus
+			h1 Seek Consensus
 			p.
 				Propose topics or questions to be discussed at your next meeting, or 
 				vote on the proposals from your colleagues.
 			p
 				button.btn.btn-primary.btn-lg.signin Sign in with Persona  &raquo;
 	- else
+		h1 Agendas
+
 		- if (!locals.agendas || locals.agendas.length === 0)
 			p No meetings are seeking your consensus today.
 		- else
-			- for (var i = 0; i < locals.agendas.length; i++)
-				- agenda = locals.agendas[i]
-				a(href="/agendas/#{agenda.key}")= agenda.title
-				br
+			table.table
+				tr
+					th Name
+					th Owner
+				- each agenda in locals.agendas
+					+agendaRow(agenda)
 		hr
 		p 
 			a.btn.btn-lg.btn-primary(href="/agendas/new") Create a new agenda &raquo;

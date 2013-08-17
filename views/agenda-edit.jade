@@ -1,6 +1,11 @@
 extends layout
 
 block content
+	.page-header
+		- if (locals.ititle)
+			h1= ititle
+		- else
+			h1 New agenda
 	form.col-10(method="POST", action="/agendas/new")
 		.form-group
 			input.form-control.input-lg(type="text", placeholder="Title", name="ititle") #{locals.ititle}

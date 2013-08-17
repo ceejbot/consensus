@@ -4,4 +4,22 @@ block content
 	.page-header
 		h1= person.email
 
-	
+	p= person.email
+		br
+		| Member since #{person.createdSince()}
+
+	form(action="/settings", method="POST")
+		.form-group
+			input.form-control.input-lg(type="text", placeholder="Your name", name="iname", value="#{person.name}")
+			span.help-block How other people know you.
+		.form-group
+			textarea.form-control(rows='5', name="idesc", placeholder="A description of your role (optional)")
+				= person.description
+			span.help-block You can use Markdown or html in the description.
+		.form-group
+			input.form-control.input-lg(type="text", placeholder="http://avatar.url.png", name="iavatar", value="#{person.avatar}")
+			span.help-block Url for an image to use as a representation of you.
+		.form-group
+			button.btn.btn-default(type="cancel") Cancel
+			&nbsp;
+			button.btn.btn-primary(type="submit") Save

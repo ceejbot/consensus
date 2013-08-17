@@ -100,13 +100,13 @@ exports.agenda = function(request, response)
 	}).done();
 };
 
-exports.agendaNewGet = function(request, response)
+exports.newAgenda = function(request, response)
 {
 	response.app.logger.info('hello new agenda form');
 	response.render('agenda-edit', { title: 'New agenda' });
 };
 
-exports.agendaNewPost = function(request, response)
+exports.handleNewAgenda = function(request, response)
 {
 	var owner = response.locals.authed_user;
 	var opts =
@@ -415,15 +415,31 @@ exports.settings = function(request, response)
 {
 	response.render('settings',
 	{
-		person: request.locals.authed_user,
+		person: response.locals.authed_user,
 		title: 'Your account'
 	});
 };
 
-exports.settingsPost = function(request, response)
+exports.handleSettings = function(request, response)
 {
-	// TODO
-	var person = request.locals.authed_user;
+	var person = response.locals.authed_user;
 
+	person.name = request.body.iname;
+	person.description = request.body.idesc;
+	person.avatar = request.body.iavatar;
+	person.modified = Date.now();
+
+	person.saveP()
+	.then(function()
+	{
+		request.flash('success', 'You have updated your profile.');
+		response.redirect('/');
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/settings');
+	}).done();
 };
 
