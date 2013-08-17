@@ -8,7 +8,9 @@ Imagine a Google Moderator that didn't make you tear your hair out. That's Conse
 
 I wanted a tool for counting votes for much smaller audiences, where topic discovery was much easier. Well, possible.
 
-### 
+### Features
+
+TBD
 
 ## Operational requirements
 
@@ -36,3 +38,7 @@ Clone the repo or `npm install consensus`. Copy the sample config file in `confi
 You may also pass in the location of the config file using the `CONFIG_FILE` environment variable.
 
 Then start the app: `npm start`.
+
+## API
+
+TBD.

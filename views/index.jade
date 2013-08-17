@@ -5,7 +5,7 @@ mixin agendaRow(agenda)
 		td
 			a(href="/agendas/#{agenda.key}")= agenda.title
 		td
-			a(href="mailto:#{agenda.owner_id}")= agenda.owner_id
+			a(href="/u/#{agenda.owner_id}")= agenda.owner_id
 
 block content
 	- if (!locals.authed_user)

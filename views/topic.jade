@@ -4,7 +4,7 @@ block content
 	.page-header
 		h1= topic.title
 		small suggested by 
-			a(href="mailto:#{topic.owner_id}")= topic.owner_id
+			a(href="/u/#{topic.owner_id}")= topic.owner_id
 	.well!= description
 	p Proposed for discussion at 
 		a(href="/agendas/#{agenda.key}")= agenda.title
