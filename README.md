@@ -12,9 +12,16 @@ I wanted a tool for counting votes for much smaller audiences, where topic disco
 
 TBD
 
+- automatic account provisioning & signin via [Mozilla Persona](https://www.mozilla.org/en-US/persona/)
+- anyone can set up an agenda aka meeting
+- anyone can add topics to an agenda
+- everyone can vote on those topics
+- markdown formatting for everything with a description
+
+
 ## Operational requirements
 
-Consensus stores its data in a set of leveldb databases, which are saved on disk. You'll wish to have sufficient fast disk to support your expected use. For small, inactive installations, just about anything will do. You'll also want to back those files up if the data Consensus stores is valuable to you.
+Consensus stores its data in a set of leveldb databases, which are saved on disk. You'll wish to have sufficient fast disk to support your expected use. For small, less-active installations, just about anything will do. You'll also want to back those files up if the data Consensus stores is valuable to you.
 
 Consensus makes no attempt to restrict access to the data or to account creation. If you have access to the site, you can create an account using [Mozilla Persona](https://www.mozilla.org/en-US/persona/). It is intended to be used behind a firewall. Note that it must be able to make outgoing connections at least to `verifier.login.persona.org:443` to verify user identities.
 
