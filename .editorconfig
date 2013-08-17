@@ -7,3 +7,6 @@ insert_final_newline = true
 [*.js]
 indent_style = tab
 trim_trailing_whitespace = true
+curly_bracket_next_line = true
+indent_brace_style = Allman
+quote_type = single

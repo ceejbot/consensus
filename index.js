@@ -6,6 +6,7 @@ var
 	path       = require('path'),
 	routes     = require('./routes'),
 	util       = require('util'),
+	Person     = require('./lib/Person'),
 	Controller = require('./lib/controller')
 	;
 
@@ -16,7 +17,7 @@ var appname = 'consensus';
 
 app.SESSION_TTL = 60 * 60 * 24 * 365; // 1 year in seconds
 
-var config = fs.readFileSync('./config.js');
+var config = fs.readFileSync(process.env.CONFIG_FILE || './config.js');
 if (config.length)
 	config = JSON.parse(config);
 
@@ -96,7 +97,7 @@ function authenticatedUser(request, response, next)
 	if (!email)
 		return next();
 
-	controller.personByEmail(email)
+	Person.personByEmail(email)
 	.then(function(person)
 	{
 		response.locals.authed_user = person;
@@ -146,7 +147,7 @@ var logstream =
 // ----------------------------------------------------------------------
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || config.port || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());

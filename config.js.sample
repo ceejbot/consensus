@@ -1,4 +1,5 @@
 {
+	"port": 3000,
 	"dbpath": "/var/db/consensus",
 	"logging":
 	{
