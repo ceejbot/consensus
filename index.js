@@ -75,10 +75,10 @@ function initializePageLocals(request, response, next)
 		{
 			flash = flash || {};
 			response.locals.flash = {};
-			response.locals.flash.info = flash['info'];
-			response.locals.flash.error = flash['error'];
-			response.locals.flash.success = flash['success'];
-			response.locals.flash.warning = flash['warning'];
+			response.locals.flash.info = flash.info;
+			response.locals.flash.error = flash.error;
+			response.locals.flash.success = flash.success;
+			response.locals.flash.warning = flash.warning;
 
 			request.session.set('flash', {}, function(err)
 			{
@@ -174,6 +174,7 @@ app.post('/auth/signout', routes.signout);
 
 app.get('/agendas/new', requireAuthedUser, routes.newAgenda);
 app.post('/agendas/new', requireAuthedUser, routes.handleNewAgenda);
+app.get('/agendas/relevant', routes.relevantAgendas);
 app.get('/agendas/:id', routes.agenda);
 
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);

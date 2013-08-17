@@ -12,7 +12,6 @@ exports.index = function(request, response)
 	Agenda.all(function(err, agendas)
 	{
 		response.render('index', { title: 'Consensus', agendas: agendas });
-
 	});
 };
 
@@ -70,9 +69,27 @@ exports.signin = function(request, response)
 	});
 };
 
-exports.signout = function(request, response)
+exports.signout = function signout(request, response)
 {
 	request.session.delAll();
+};
+
+exports.relevantAgendas = function relevantAgendas(request, response)
+{
+	var locals = {};
+	var owner = response.locals.authed_user;
+
+	owner.fetchAgendas()
+	.then(function(agendas)
+	{
+		locals.agendas = agendas;
+		response.render('agendas-mine', locals);
+	})
+	.fail(function(err)
+	{
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
 };
 
 exports.agenda = function(request, response)
@@ -116,8 +133,15 @@ exports.handleNewAgenda = function(request, response)
 		owner: owner
 	};
 
+	var agenda;
+
 	Agenda.create(opts)
-	.then(function(agenda)
+	.then(function(created)
+	{
+		agenda = created;
+		return owner.addAgenda(agenda.key);
+	})
+	.then(function()
 	{
 		request.flash('success', 'Agenda created.');
 		response.redirect('/agendas/' + agenda.key);
@@ -212,6 +236,8 @@ exports.newTopic = function newTopic(request, response)
 exports.handleNewTopic = function handleNewTopic(request, response)
 {
 	var aid = request.params.id;
+	var owner = response.locals.authed_user;
+	var topic;
 
 	Agenda.get(aid, function(err, agenda)
 	{
@@ -222,7 +248,6 @@ exports.handleNewTopic = function handleNewTopic(request, response)
 			return;
 		}
 
-		var owner = response.locals.authed_user;
 		var opts =
 		{
 			title:       request.body.ititle,
@@ -232,7 +257,12 @@ exports.handleNewTopic = function handleNewTopic(request, response)
 		};
 
 		Topic.create(opts)
-		.then(function(topic)
+		.then(function(newtopic)
+		{
+			topic = newtopic;
+			return owner.addAgenda(aid);
+		})
+		.then(function()
 		{
 			request.flash('success', 'Topic created.');
 			response.redirect('/topics/' + topic.key);
@@ -312,7 +342,6 @@ exports.handleEditTopic = function(request, response)
 	response.redirect('/');
 };
 
-
 exports.handleTopicVote = function handleTopicVote(request, response)
 {
 	var owner = response.locals.authed_user;
@@ -355,6 +384,10 @@ exports.handleTopicVote = function handleTopicVote(request, response)
 	{
 		vote = created;
 		return opts.topic.recordVote(vote.state);
+	})
+	.then(function()
+	{
+		return owner.addAgenda(opts.topic.agenda_id);
 	})
 	.then(function()
 	{

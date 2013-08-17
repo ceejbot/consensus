@@ -1,0 +1,22 @@
+extends layout
+
+mixin agendaRow(agenda)
+	tr
+		td
+			a(href="/agendas/#{agenda.key}")= agenda.title
+		td
+			a(href="mailto:#{agenda.owner_id}")= agenda.owner_id
+
+block content
+	h1 Relevant agendas 
+		small &nbsp; for #{authed_user.name}
+
+	- if (!locals.agendas || locals.agendas.length === 0)
+		p You haven't expressed interest in any agendas.
+	- else
+		table.table
+			tr
+				th Name
+				th Owner
+			- each agenda in locals.agendas
+				+agendaRow(agenda)
