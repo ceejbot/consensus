@@ -160,6 +160,69 @@ exports.handleNewAgenda = function(request, response)
 	}).done();
 };
 
+exports.handleCloseAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var locals = {};
+
+	Agenda.fetch(request.params.id)
+	.then(function(agenda)
+	{
+		if (agenda.owner_id !== owner.email)
+		{
+			request.flash('error', 'That agenda doesn\'t belong to you.');
+			response.redirect('/');
+			return;
+		}
+
+		locals.agenda = agenda;
+		agenda.active = false;
+		return agenda.saveP();
+	})
+	.then(function()
+	{
+		request.flash('Your agenda has been marked as inactive.');
+		response.redirect('/agendas/' + request.params.id);
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+};
+
+exports.handleOpenAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var locals = {};
+
+	Agenda.fetch(request.params.id)
+	.then(function(agenda)
+	{
+		if (agenda.owner_id !== owner.email)
+		{
+			request.flash('error', 'That agenda doesn\'t belong to you.');
+			response.redirect('/');
+			return;
+		}
+
+		locals.agenda = agenda;
+		agenda.active = true;
+		return agenda.saveP();
+	})
+	.then(function()
+	{
+		request.flash('Your agenda has been marked as active.');
+		response.redirect('/agendas/' + request.params.id);
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+};
+
+
 exports.topic = function topic(request, response)
 {
 	var owner = response.locals.authed_user;

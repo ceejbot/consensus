@@ -22,8 +22,12 @@ block content
 		h2= agenda.title 
 			br
 			small &nbsp; run by #{agenda.owner_id}
+
+	- if (!agenda.active)
+		.alert.alert-warning
+			| This agenda is no longer active.
 	
-	.well!= description
+	div!= description
 
 	- var isOwner = locals.authed_user && (agenda.owner_id === locals.authed_user.email);
 	- if (agenda.topics.length > 0)
@@ -51,12 +55,20 @@ block content
 	hr
 	- if (locals.authed_user)
 		p 
-			a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
-			if (authed_user.email === agenda.owner_id)
-				| &nbsp;
-				a.btn.btn-danger(href="/agendas/#{agenda.key}/close") 
-					i.icon-large.icon-archive 
-					| Archive this agenda
+			- if (agenda.active)
+				a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
+				if (authed_user.email === agenda.owner_id)
+					| &nbsp;
+					form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
+						button.btn.btn-danger(type="submit", value='close')
+							i.icon-large.icon-archive 
+							| Archive this agenda
+			- else
+				if (authed_user.email === agenda.owner_id)
+					form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
+						button.btn.btn-success(type="submit", value='open')
+							i.icon-large.icon-archive 
+							| Re-open this agenda
 
 	- else
 		p Log in to add topics or vote on proposals.
