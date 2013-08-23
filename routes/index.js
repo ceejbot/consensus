@@ -135,8 +135,8 @@ exports.handleNewAgenda = function(request, response)
 	var owner = response.locals.authed_user;
 	var opts =
 	{
-		title: request.body.ititle,
-		description: request.body.idesc,
+		title: request.sanitize('ititle').xss(),
+		description: request.sanitize('idesc').xss(),
 		owner: owner
 	};
 
@@ -320,8 +320,8 @@ exports.handleNewTopic = function handleNewTopic(request, response)
 
 		var opts =
 		{
-			title:       request.body.ititle,
-			description: request.body.idesc,
+			title:       request.sanitize('ititle').xss(),
+			description: request.sanitize('idesc').xss(),
 			owner:       owner,
 			agenda:      agenda
 		};
@@ -527,9 +527,24 @@ exports.handleSettings = function(request, response)
 {
 	var person = response.locals.authed_user;
 
-	person.name = request.body.iname;
-	person.description = request.body.idesc;
-	person.avatar = request.body.iavatar;
+	request.assert('iavatar', 'avatar is not a valid url').isUrl();
+
+	var errors = request.validationErrors();
+	if (errors)
+	{
+		request.flash(util.inspect(errors));
+		var locals =
+		{
+			person: response.locals.authed_user,
+			title: 'Your account'
+		};
+		response.render('settings', locals);
+		return;
+	}
+
+	person.name = request.sanitize('iname').xss();
+	person.description = request.sanitize('idesc').xss();
+	person.avatar = request.sanitize('iavatar').xss();
 	person.modified = Date.now();
 
 	person.saveP()

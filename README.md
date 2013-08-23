@@ -49,6 +49,7 @@ TBD.
 
 ## TODO before ship
 
+- sanitize form input
 - editing agendas
 - editing topics
 - do something useful when topics are flagged

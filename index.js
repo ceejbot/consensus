@@ -1,13 +1,14 @@
 var
-	bunyan     = require('bunyan'),
-	express    = require('express.io'),
-	fs         = require('fs'),
-	http       = require('http'),
-	path       = require('path'),
-	routes     = require('./routes'),
-	util       = require('util'),
-	Person     = require('./lib/Person'),
-	Controller = require('./lib/controller')
+	bunyan      = require('bunyan'),
+	express     = require('express.io'),
+	exValidator = require('express-validator'),
+	fs          = require('fs'),
+	http        = require('http'),
+	path        = require('path'),
+	routes      = require('./routes'),
+	util        = require('util'),
+	Person      = require('./lib/Person'),
+	Controller  = require('./lib/controller')
 	;
 
 var app = express();
@@ -154,6 +155,7 @@ app.use(express.favicon());
 app.use(express.logger({stream: logstream, format: 'tiny'}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
+app.use(exValidator());
 app.use(express.methodOverride());
 app.use(express.cookieParser(process.env.NOMNOMNOM));
 app.use(sessiondb);
