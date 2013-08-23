@@ -19,21 +19,22 @@ html
 				a.navbar-brand(href="/") Consensus
 			.collapse.navbar-collapse.collapsing-nav
 				ul.nav.navbar-nav
-					li.active
-						a(href="/") Home
 					- if (locals.authed_user !== null)
 						li
-							a(href="/u/#{authed_user.email}")= authed_user.displayName()
+							a(href="/u/#{authed_user.email}") Agendas
 						li
-							a(href="/settings") Settings
-				- if (locals.authed_user !== null)
-					button.btn.btn-default.navbar-btn#signout(type="button") 
-						i.icon-signout
-						|  Sign out
-				- else
-					button.btn.btn-default.navbar-btn.signin(type="button") 
-						i.icon-signin 
-						|  Sign in
+							a(href="/settings") 
+								i.icon-gear.icon-large
+								| &nbsp; Settings
+				.navbar-right
+					- if (locals.authed_user !== null)
+						button.btn.btn-default.navbar-btn#signout(type="button") 
+							i.icon-signout
+							|  Sign out
+					- else
+						button.btn.btn-default.navbar-btn.signin(type="button") 
+							i.icon-signin 
+							|  Sign in
 		- if (locals.flash.error)
 			.container
 				.alert.alert-danger.col-8-lg

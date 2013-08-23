@@ -54,21 +54,23 @@ block content
 
 	hr
 	- if (locals.authed_user)
-		p 
+		.row
 			- if (agenda.active)
-				a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
+				.col-lg-2
+					a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
 				if (authed_user.email === agenda.owner_id)
-					| &nbsp;
-					form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
-						button.btn.btn-danger(type="submit", value='close')
-							i.icon-large.icon-archive 
-							| Archive this agenda
+					.col-lg-4
+						form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
+							button.btn.btn-danger(type="submit", value='close')
+								i.icon-large.icon-archive 
+								| Archive this agenda
 			- else
 				if (authed_user.email === agenda.owner_id)
-					form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
-						button.btn.btn-success(type="submit", value='open')
-							i.icon-large.icon-archive 
-							| Re-open this agenda
+					.col-lg-3
+						form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
+							button.btn.btn-success(type="submit", value='open')
+								i.icon-large.icon-archive 
+								| Re-open this agenda
 
 	- else
 		p Log in to add topics or vote on proposals.
