@@ -4,20 +4,17 @@ Imagine a Google Moderator that didn't make you tear your hair out. That's Conse
 
 ## What's that when it's at home?
 
-[Google Moderator](https://www.google.com/moderator/) is a tool for counting votes on topics. The intent of their tool is to count lots of votes from lots of people for giant events. I hear their own company meeting is an intended use. Sadly, smaller companies also sometimes use it as a convenient voting tool. That's where its typically horrible Google user interface starts to truly hurt.
+Consensus is a tool for counting votes on topics proposed by its users. Topics are grouped into "agendas", which are lists of things to consider at meeting. Any Consensus user can create an agenda. Any Consensus user can propose a topic for any agenda. Votes are private *only* in the sense that they're not exposed by default in the UI, though you could show them if you wanted.
 
-I wanted a tool for counting votes for much smaller audiences, where topic discovery was much easier. Well, possible.
+Use it anywhere where you'd like a medium-sized group of people to vote on things regularly.
 
 ### Features
-
-TBD
 
 - automatic account provisioning & signin via [Mozilla Persona](https://www.mozilla.org/en-US/persona/)
 - anyone can set up an agenda aka meeting
 - anyone can add topics to an agenda
 - everyone can vote on those topics
 - markdown formatting for everything with a description
-
 
 ## Operational requirements
 
@@ -49,3 +46,13 @@ Then start the app: `npm start`.
 ## API
 
 TBD.
+
+## TODO before ship
+
+- editing agendas
+- editing topics
+- do something useful when topics are flagged
+- show winning topics more clearly
+- deleting account
+- API
+- make it a backbone app
