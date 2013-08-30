@@ -280,6 +280,13 @@ exports.handleOpenAgenda = function(request, response)
 	Agenda.fetch(request.params.id)
 	.then(function(agenda)
 	{
+		if (!agenda)
+		{
+			request.flash('error', 'That agenda can\'t be found.');
+			response.redirect('/');
+			return;
+		}
+
 		if (agenda.owner_id !== owner.email)
 		{
 			request.flash('error', 'That agenda doesn\'t belong to you.');
@@ -303,8 +310,57 @@ exports.handleOpenAgenda = function(request, response)
 	}).done();
 };
 
+exports.handleDeleteAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var locals = {};
+	var agenda;
 
-exports.topic = function topic(request, response)
+	Agenda.fetch(request.params.id)
+	.then(function(found)
+	{
+		if (!found)
+		{
+			request.flash('error', 'That agenda can\'t be found.');
+			response.redirect('/');
+			return;
+		}
+
+		if (found.owner_id !== owner.email)
+		{
+			request.flash('error', 'That agenda doesn\'t belong to you.');
+			response.redirect('/');
+			return;
+		}
+
+		agenda = found;
+		return agenda.fetchTopics();
+	})
+	.then(function(topics)
+	{
+		return Topic.destroyBatch(topics);
+	})
+	.then(function()
+	{
+		// TODO
+		// delete votes
+
+		return agenda.destroyP();
+	})
+	.then(function()
+	{
+		request.flash('The agenda "' + agenda.title + '" has been deleted.');
+		response.redirect('/');
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+
+};
+
+exports.topic = function(request, response)
 {
 	var owner = response.locals.authed_user;
 	var locals = {};
