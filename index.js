@@ -69,6 +69,8 @@ function flash(request, response, next)
 
 function initializePageLocals(request, response, next)
 {
+	response.locals.sitename = config.name;
+
 	request.session.get('user_id', function(err, user_id)
 	{
 		response.locals.user_id = user_id;

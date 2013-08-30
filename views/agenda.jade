@@ -4,16 +4,16 @@ mixin topicRow(topic)
 	tr
 		td
 			- if (topic.state === 'closed')
-				i.icon-large.icon-check
+				i.icon-large.icon-check.pull-right
 			- else
-				= topic.tally
+				code.pull-right= topic.tally
 		td
 			a(href="/topics/#{topic.key}")= topic.title
 		td= topic.proposedWhen()
 		td
 			- if (isOwner)
 				form.form-inline(method="POST", action="/topics/#{topic.key}/close")
-					button.btn.btn-large.btn-default(type="submit", value="close")
+					button.btn.btn-large.btn-default.color4(type="submit", value="close")
 						i.icon-large.icon-check
 						| &nbsp; Resolve
 
@@ -27,16 +27,17 @@ block content
 		.alert.alert-warning
 			| This agenda is no longer active.
 	
-	div!= description
+	.well.color1c!= description
 
 	- var isOwner = locals.authed_user && (agenda.owner_id === locals.authed_user.email);
 	- if (agenda.topics.length > 0)
-		table.table
+		table.table.table-striped.table-bordered.color3
 			tr
 				td(colspan=4)
 					h3 Open topics
 			tr
-				th Tally
+				th 
+					.pull-right Tally
 				th Topic
 				th Proposed
 				th &nbsp;
@@ -52,12 +53,11 @@ block content
 	- else
 		p This meeting has no open topics.
 
-	hr
 	- if (locals.authed_user)
 		.row
 			- if (agenda.active)
 				.col-lg-2
-					a.btn.btn-primary(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
+					a.btn.btn-success.color1c(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
 				if (authed_user.email === agenda.owner_id)
 					.col-lg-4
 						form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
@@ -66,7 +66,7 @@ block content
 								| Archive this agenda
 			- else
 				if (authed_user.email === agenda.owner_id)
-					.col-lg-3
+					.col-lg-4
 						form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
 							button.btn.btn-success(type="submit", value='open')
 								i.icon-large.icon-archive 
@@ -74,3 +74,5 @@ block content
 
 	- else
 		p Log in to add topics or vote on proposals.
+
+

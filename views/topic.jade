@@ -17,7 +17,7 @@ block content
 			- if (locals.authed_user && (topic.owner_id === locals.authed_user.email))
 				.col-md-2
 					form.form-inline(method="POST", action="/topics/#{topic.key}/close")
-						button.btn.btn-large.btn-default.btn-block(type="submit", value="close")
+						button.btn.btn-large.btn-block.color4(type="submit", value="close")
 							i.icon-large.icon-lock
 							| &nbsp; Close topic 
 			.col-md-2
@@ -41,7 +41,7 @@ block content
 			- if (locals.authed_user && (topic.owner === locals.authed_user.email))
 				.col-md-3
 					form.form-inline(method="POST", action="/topics/#{topic.key}/open")
-						button.btn.btn-large.btn-block.btn-default(type="submit", value='open')
+						button.btn.btn-large.btn-block.color3(type="submit", value='open')
 							i.icon-large.icon-unlock
 							| &nbsp; Re-open topic
 			- else

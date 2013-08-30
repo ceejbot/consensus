@@ -17,17 +17,16 @@ block content
 			p
 				button.btn.btn-primary.btn-lg.signin Sign in with Persona  &raquo;
 	- else
-		h1 Agendas
+		h1 Open agendas
 
 		- if (!locals.agendas || locals.agendas.length === 0)
 			p No meetings are seeking your consensus today.
 		- else
-			table.table
+			table.table.table-striped.table-bordered.color2
 				tr
 					th Name
 					th Owner
 				- each agenda in locals.agendas
 					+agendaRow(agenda)
-		hr
 		p 
-			a.btn.btn-lg.btn-primary(href="/agendas/new") Create a new agenda &raquo;
+			a.btn.btn-lg.color2(href="/agendas/new") Create a new agenda &raquo;
