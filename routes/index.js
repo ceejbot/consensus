@@ -126,7 +126,6 @@ exports.agenda = function(request, response)
 
 exports.newAgenda = function(request, response)
 {
-	response.app.logger.info('hello new agenda form');
 	response.render('agenda-edit', { title: 'New agenda' });
 };
 
@@ -160,6 +159,81 @@ exports.handleNewAgenda = function(request, response)
 	}).done();
 };
 
+exports.editAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var locals = {};
+
+	Agenda.fetch(request.params.id)
+	.then(function(agenda)
+	{
+		if (!agenda)
+		{
+			request.flash('error', 'That agenda can\'t be found.');
+			response.redirect('/');
+			return;
+		}
+
+		if (agenda.owner_id !== owner.email)
+		{
+			request.flash('error', 'That agenda doesn\'t belong to you.');
+			response.redirect('/');
+			return;
+		}
+
+		locals.agenda = agenda;
+		locals.title = agenda.title;
+		locals.ititle = agenda.title;
+		locals.idesc = agenda.description;
+
+		response.render('agenda-edit', locals);
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+};
+
+exports.handleEditAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+
+	Agenda.fetch(request.params.id)
+	.then(function(agenda)
+	{
+		if (!agenda)
+		{
+			request.flash('error', 'That agenda can\'t be found.');
+			response.redirect('/');
+			return;
+		}
+
+		if (agenda.owner_id !== owner.email)
+		{
+			request.flash('error', 'That agenda doesn\'t belong to you.');
+			response.redirect('/');
+			return;
+		}
+
+		agenda.title = request.sanitize('ititle').xss();
+		agenda.description = request.sanitize('idesc').xss();
+		return agenda.saveP();
+	})
+	.then(function()
+	{
+		request.flash('Your agenda has been marked as inactive.');
+		response.redirect('/agendas/' + request.params.id);
+
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/');
+	}).done();
+
+};
+
 exports.handleCloseAgenda = function(request, response)
 {
 	var owner = response.locals.authed_user;
@@ -168,6 +242,13 @@ exports.handleCloseAgenda = function(request, response)
 	Agenda.fetch(request.params.id)
 	.then(function(agenda)
 	{
+		if (!agenda)
+		{
+			request.flash('error', 'That agenda can\'t be found.');
+			response.redirect('/');
+			return;
+		}
+
 		if (agenda.owner_id !== owner.email)
 		{
 			request.flash('error', 'That agenda doesn\'t belong to you.');

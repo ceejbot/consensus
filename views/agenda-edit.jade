@@ -6,13 +6,20 @@ block content
 			h1= ititle
 		- else
 			h1 New agenda
-	form.col-10(method="POST", action="/agendas/new")
+	- if (locals.agenda)
+		- action = "/agendas/" + agenda.key + "/edit"
+	- else
+		- action = '/agendas/new'
+	form.col-10(method="POST", action="#{action}")
 		.form-group
-			input.form-control.input-lg(type="text", placeholder="Title", name="ititle") #{locals.ititle}
+			- if (locals.ititle)
+				input.form-control.input-lg(type="text", placeholder="Title", name="ititle", value="#{ititle}") 
+			- else
+				input.form-control.input-lg(type="text", placeholder="Title", name="ititle")
 			span.help-block Name of your meeting or the agenda title.
 		.form-group
 			textarea.form-control(rows='5', name="idesc", placeholder="Description of the meeting.")
-				= locals.idesc
+				= idesc
 			span.help-block You can use Markdown or html in the description.
 		.form-group
 			button.btn.btn-default(type="cancel") Cancel 

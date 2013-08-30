@@ -56,17 +56,21 @@ block content
 	- if (locals.authed_user)
 		.row
 			- if (agenda.active)
-				.col-lg-2
+				.col-md-2
 					a.btn.btn-success.color1c(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
-				if (authed_user.email === agenda.owner_id)
-					.col-lg-4
+				- if (authed_user.email === agenda.owner_id)
+					.col-md-2
+						a.btn.color2c(href="/agendas/#{agenda.key}/edit")
+							i.icon-large.icon-edit 
+							| Edit agenda
+					.col-md-3
 						form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
 							button.btn.btn-danger(type="submit", value='close')
 								i.icon-large.icon-archive 
 								| Archive this agenda
 			- else
 				if (authed_user.email === agenda.owner_id)
-					.col-lg-4
+					.col-md-3
 						form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
 							button.btn.btn-success(type="submit", value='open')
 								i.icon-large.icon-archive 
