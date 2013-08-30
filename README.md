@@ -49,11 +49,11 @@ TBD.
 
 ## TODO before ship
 
-- sanitize form input
-- editing agendas
 - editing topics
 - do something useful when topics are flagged
 - show winning topics more clearly
+- deleting topics
+- deleting agendas
 - deleting account
 - API
-- make it a backbone app
+- make it a js in-page app
