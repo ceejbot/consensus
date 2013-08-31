@@ -10,10 +10,17 @@ var
 
 exports.index = function(request, response)
 {
-	Agenda.all(function(err, agendas)
+	Agenda.all()
+	.then(function(agendas)
 	{
 		response.render('index', { title: 'Consensus', agendas: agendas });
-	});
+	})
+	.fail(function(err)
+	{
+		request.app.logger.error(err, 'error fetching agendas');
+		request.flash('error', 'Warning: couldn\'t fetch agendas.');
+		response.render('index', { title: 'Consensus', agendas: [] });
+	}).done();
 };
 
 var AUDIENCE = 'http://localhost:3000';
@@ -35,7 +42,7 @@ exports.signin = function(request, response)
 	{
 		if (err)
 		{
-			request.app.logger.error('error calling persona verifier:', err.message);
+			request.app.logger.error(err, 'error calling persona verifier:', err.message);
 			return;
 		}
 		// verified should have fields: status, email, audience, expires, issuer
@@ -103,7 +110,7 @@ exports.agenda = function(request, response)
 {
 	var locals = {};
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(agenda)
 	{
 		locals.agenda = agenda;
@@ -119,6 +126,7 @@ exports.agenda = function(request, response)
 	})
 	.fail(function(err)
 	{
+		response.app.logger.error(err);
 		request.flash('error', 'That agenda doesn\'t exist.');
 		response.redirect('/');
 	}).done();
@@ -164,7 +172,7 @@ exports.editAgenda = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(agenda)
 	{
 		if (!agenda)
@@ -199,7 +207,7 @@ exports.handleEditAgenda = function(request, response)
 {
 	var owner = response.locals.authed_user;
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(agenda)
 	{
 		if (!agenda)
@@ -218,7 +226,7 @@ exports.handleEditAgenda = function(request, response)
 
 		agenda.title = request.sanitize('ititle').xss();
 		agenda.description = request.sanitize('idesc').xss();
-		return agenda.saveP();
+		return agenda.save();
 	})
 	.then(function()
 	{
@@ -239,7 +247,7 @@ exports.handleCloseAgenda = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(agenda)
 	{
 		if (!agenda)
@@ -258,7 +266,7 @@ exports.handleCloseAgenda = function(request, response)
 
 		locals.agenda = agenda;
 		agenda.active = false;
-		return agenda.saveP();
+		return agenda.save();
 	})
 	.then(function()
 	{
@@ -277,7 +285,7 @@ exports.handleOpenAgenda = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(agenda)
 	{
 		if (!agenda)
@@ -296,7 +304,7 @@ exports.handleOpenAgenda = function(request, response)
 
 		locals.agenda = agenda;
 		agenda.active = true;
-		return agenda.saveP();
+		return agenda.save();
 	})
 	.then(function()
 	{
@@ -316,7 +324,7 @@ exports.handleDeleteAgenda = function(request, response)
 	var locals = {};
 	var agenda;
 
-	Agenda.fetch(request.params.id)
+	Agenda.get(request.params.id)
 	.then(function(found)
 	{
 		if (!found)
@@ -342,10 +350,7 @@ exports.handleDeleteAgenda = function(request, response)
 	})
 	.then(function()
 	{
-		// TODO
-		// delete votes
-
-		return agenda.destroyP();
+		return agenda.destroy();
 	})
 	.then(function()
 	{
@@ -365,7 +370,7 @@ exports.topic = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Topic.fetch(request.params.tid)
+	Topic.get(request.params.tid)
 	.then(function(topic)
 	{
 		if (!topic || (Array.isArray(topic) && topic.length === 0))
@@ -404,7 +409,7 @@ exports.topic = function(request, response)
 			}
 		}
 
-		return Agenda.fetch(locals.topic.agenda_id);
+		return Agenda.get(locals.topic.agenda_id);
 	})
 	.then(function(agenda)
 	{
@@ -493,12 +498,12 @@ exports.editTopic = function(request, response)
 	var owner = response.locals.authed_user;
 	var locals = {};
 
-	Topic.fetch(request.params.tid)
+	Topic.get(request.params.tid)
 	.then(function(topic)
 	{
 		if (!topic || (Array.isArray(topic) && topic.length === 0))
 		{
-			request.app.logger.info('topic not found: ' + request.params.id, err);
+			request.app.logger.info('topic not found: ' + request.params.id);
 			request.flash('error', 'That topic doesn\'t exist.');
 			response.redirect('/');
 			return;
@@ -515,7 +520,7 @@ exports.editTopic = function(request, response)
 		locals.ititle = topic.title;
 		locals.idesc =  topic.description;
 
-		return Agenda.fetch(locals.topic.agenda_id);
+		return Agenda.get(locals.topic.agenda_id);
 	})
 	.then(function(agenda)
 	{
@@ -524,7 +529,7 @@ exports.editTopic = function(request, response)
 	})
 	.fail(function(err)
 	{
-		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.app.logger.error('error fetching topic: ' + request.params.tid, err);
 		request.flash('error', err.message);
 		response.redirect('/');
 	}).done();
@@ -533,7 +538,7 @@ exports.editTopic = function(request, response)
 
 exports.handleEditTopic = function(request, response)
 {
-	Topic.fetch(request.params.tid)
+	Topic.get(request.params.tid)
 	.then(function()
 	{
 
@@ -563,7 +568,7 @@ exports.handleTopicVote = function handleTopicVote(request, response)
 		state: state,
 	};
 
-	Topic.fetch(topic_id)
+	Topic.get(topic_id)
 	.then(function(topic)
 	{
 		opts.topic = topic;
@@ -573,24 +578,31 @@ exports.handleTopicVote = function handleTopicVote(request, response)
 	{
 		if (previous)
 		{
+			vote = previous;
+			if (opts.state === previous.state)
+				return false;
+
 			return opts.topic.rollback(opts.state, previous.state)
 			.then(function()
 			{
-				previous.state = opts.state;
-				return previous.saveP();
+				vote.state = opts.state;
+				return vote.save();
 			})
 			.then(function()
 			{
-				return previous;
+				return vote;
 			});
 		}
 
 		return Vote.create(opts);
 	})
-	.then(function(created)
+	.then(function(recordThis)
 	{
-		vote = created;
-		return opts.topic.recordVote(vote.state);
+		if (recordThis)
+		{
+			vote = recordThis;
+			return opts.topic.recordVote(vote.state);
+		}
 	})
 	.then(function()
 	{
@@ -617,11 +629,11 @@ exports.closeTopic = function(request, response)
 
 	var opts = { };
 
-	Topic.fetch(topic_id)
+	Topic.get(topic_id)
 	.then(function(topic)
 	{
 		opts.topic = topic;
-		return Agenda.fetch(topic.agenda_id);
+		return Agenda.get(topic.agenda_id);
 	})
 	.then(function(agenda)
 	{
@@ -634,7 +646,7 @@ exports.closeTopic = function(request, response)
 
 		opts.topic.state = 'closed';
 		opts.topic.modified = Date.now();
-		return opts.topic.saveP();
+		return opts.topic.save();
 	})
 	.then(function()
 	{
@@ -684,7 +696,7 @@ exports.handleSettings = function(request, response)
 	person.avatar = request.sanitize('iavatar').xss();
 	person.modified = Date.now();
 
-	person.saveP()
+	person.save()
 	.then(function()
 	{
 		request.flash('success', 'You have updated your profile.');
