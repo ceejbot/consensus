@@ -180,19 +180,20 @@ app.post('/auth/signout', routes.signout);
 app.get('/agendas/new', requireAuthedUser, routes.newAgenda);
 app.post('/agendas/new', requireAuthedUser, routes.handleNewAgenda);
 app.get('/agendas/relevant', requireAuthedUser, routes.relevantAgendas);
-app.get('/agendas/:id', routes.agenda);
 app.post('/agendas/:id/close', requireAuthedUser, routes.handleCloseAgenda);
 app.post('/agendas/:id/open', requireAuthedUser, routes.handleOpenAgenda);
 app.get('/agendas/:id/edit', requireAuthedUser, routes.editAgenda);
 app.post('/agendas/:id/edit', requireAuthedUser, routes.handleEditAgenda);
 app.post('/agendas/:id/delete', requireAuthedUser, routes.handleDeleteAgenda);
+app.get('/agendas/:id', routes.agenda);
 
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);
 app.post('/agendas/:id/topics/new', requireAuthedUser, routes.handleNewTopic);
 app.post('/topics/:tid/vote/:vote', requireAuthedUser, routes.handleTopicVote);
-app.post('/topics/:tid/close', routes.closeTopic);
-app.get('/topics/:tid/edit', routes.editTopic);
-app.post('/topics/:tid/edit', routes.handleEditTopic);
+app.post('/topics/:tid/close', requireAuthedUser, routes.closeTopic);
+app.get('/topics/:tid/edit', requireAuthedUser, routes.editTopic);
+app.post('/topics/:tid/edit', requireAuthedUser, routes.handleEditTopic);
+app.post('/topics/:tid/delete', requireAuthedUser, routes.handleDeleteTopic);
 app.get('/topics/:tid', routes.topic);
 
 app.get('/u/:uid', routes.profile);

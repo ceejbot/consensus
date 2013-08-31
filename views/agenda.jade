@@ -54,10 +54,12 @@ block content
 		p This meeting has no open topics.
 
 	- if (locals.authed_user)
-		.row
-			- if (agenda.active)
+		- if (agenda.active)
+			.row
 				.col-md-2
-					a.btn.btn-success.color1c(href="/agendas/#{agenda.key}/topics/new") Add a topic &raquo;
+					a.btn.btn-success.color1c(href="/agendas/#{agenda.key}/topics/new") 
+						i.icon-large.icon-plus 
+						| Add a topic
 				- if (authed_user.email === agenda.owner_id)
 					.col-md-2
 						a.btn.color2c(href="/agendas/#{agenda.key}/edit")
@@ -68,13 +70,11 @@ block content
 							button.btn.btn-danger(type="submit", value='close')
 								i.icon-large.icon-archive 
 								| Archive this agenda
-			- else
-				if (authed_user.email === agenda.owner_id)
-					.col-md-3
-						form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
-							button.btn.btn-success(type="submit", value='open')
-								i.icon-large.icon-archive 
-								| Re-open this agenda
+		- else if (authed_user.email === agenda.owner_id)
+			form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
+				button.btn.btn-success(type="submit", value='open')
+					i.icon-large.icon-archive 
+					| Re-open this agenda
 
 	- else
 		p Log in to add topics or vote on proposals.

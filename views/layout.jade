@@ -21,11 +21,11 @@ html
 				ul.nav.navbar-nav
 					- if (locals.authed_user !== null)
 						li
-							a(href="/u/#{authed_user.email}") Agendas
+							a(href="/u/#{authed_user.email}") Profile
 						li
 							a(href="/settings") 
 								i.icon-gear.icon-large
-								| &nbsp; Settings
+								| &nbsp; #{authed_user.email}
 				.navbar-right
 					- if (locals.authed_user !== null)
 						button.btn.btn-default.navbar-btn#signout(type="button") 

@@ -16,6 +16,10 @@ block content
 		- if (topic.state !== 'closed')
 			- if (locals.authed_user && (topic.owner_id === locals.authed_user.email))
 				.col-md-2
+					a.btn.btn-large.btn-block.color4(href="/topics/#{topic.key}/edit")
+						i.icon-large.icon-edit
+						| &nbsp; Edit topic 
+				.col-md-2
 					form.form-inline(method="POST", action="/topics/#{topic.key}/close")
 						button.btn.btn-large.btn-block.color4(type="submit", value="close")
 							i.icon-large.icon-lock
@@ -32,11 +36,6 @@ block content
 						i.icon-large.icon-thumbs-down
 						| &nbsp; No
 					&nbsp;
-			.col-md-3
-				form.form-inline(method="POST", action="/topics/#{topic.key}/vote/flag")
-					button.btn.btn-large.btn-block(type="submit", class=flag_class, value="flag")
-						i.icon-large.icon-warning-sign
-						| &nbsp; Inappropriate
 		- else
 			- if (locals.authed_user && (topic.owner === locals.authed_user.email))
 				.col-md-3

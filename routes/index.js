@@ -538,20 +538,43 @@ exports.editTopic = function(request, response)
 
 exports.handleEditTopic = function(request, response)
 {
+	var owner = response.locals.authed_user;
+
 	Topic.get(request.params.tid)
+	.then(function(topic)
+	{
+		if (!topic)
+		{
+			request.app.logger.info('topic not found: ' + request.params.id);
+			request.flash('error', 'That topic doesn\'t exist.');
+			response.redirect('/');
+			return;
+		}
+
+		if (topic.owner_id !== owner.email)
+		{
+			request.flash('error', 'You are not authorized to edit that topic.');
+			response.redirect('/topic/' + topic.key);
+			return;
+		}
+
+		topic.title = request.sanitize('ititle').xss();
+		topic.description = request.sanitize('idesc').xss();
+		topic.modified = Date.now();
+
+		return topic.save();
+	})
 	.then(function()
 	{
-
+		request.flash('success', 'Topic edits saved.');
+		response.redirect('/topics/' + request.params.tid);
 	})
 	.fail(function(err)
 	{
-		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.app.logger.error(err, 'error fetching topic: ' + request.params.id);
 		request.flash('error', err.message);
-		response.redirect('/');
+		response.redirect('/topics/' + request.params.tid);
 	}).done();
-
-	request.flash('error', 'topic editing not implemented yet');
-	response.redirect('/');
 };
 
 exports.handleTopicVote = function handleTopicVote(request, response)
@@ -652,6 +675,32 @@ exports.closeTopic = function(request, response)
 	{
 		response.app.logger.debug('topic: ' + opts.topic.key + ' closed by ' + person.email);
 		request.flash('success', 'That topic has been marked as closed.');
+		response.redirect('/agendas/' + opts.topic.agenda_id);
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', err.message);
+		response.redirect('/topics/' + topic_id);
+	}).done();
+};
+
+exports.handleDeleteTopic = function(request, response)
+{
+	var person = response.locals.authed_user;
+	var topic_id = request.params.tid;
+	var opts = {};
+
+	Topic.get(topic_id)
+	.then(function(topic)
+	{
+		opts.topic = topic;
+		return topic.obliterate();
+	})
+	.then(function()
+	{
+		response.app.logger.debug('topic: ' + opts.topic.key + ' deleted by ' + person.email);
+		request.flash('success', 'Topic "' + opts.topic.title + '" has been deleted.');
 		response.redirect('/agendas/' + opts.topic.agenda_id);
 	})
 	.fail(function(err)
