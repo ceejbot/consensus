@@ -6,6 +6,7 @@ var
 	http        = require('http'),
 	path        = require('path'),
 	routes      = require('./routes'),
+	api         = require('./routes/api'),
 	util        = require('util'),
 	Person      = require('./lib/Person'),
 	Controller  = require('./lib/controller')
@@ -15,6 +16,7 @@ var app = express();
 app.http().io();
 
 var appname = 'consensus';
+process.title = appname;
 
 app.SESSION_TTL = 60 * 60 * 24 * 365; // 1 year in seconds
 
@@ -73,10 +75,21 @@ function initializePageLocals(request, response, next)
 
 	request.session.get('user_id', function(err, user_id)
 	{
+		if (err)
+		{
+			console.error(err);
+			return next(err);
+		}
+
 		response.locals.user_id = user_id;
 
 		request.session.get('flash', function(err, flash)
 		{
+			if (err)
+			{
+				console.error(err);
+				return next(err);
+			}
 			flash = flash || {};
 			response.locals.flash = {};
 			response.locals.flash.info = flash.info;
@@ -211,10 +224,16 @@ app.get('/ping', function(request, response)
 	response.json(health);
 });
 
+// add API routes
+app.get('/api/1/people/:id',  api.person);
+app.get('/api/1/people',      api.people);
+
+app.get('/api/1/agendas/:id', api.agenda);
+app.get('/api/1/agendas',     api.agendas);
+
 // ----------------------------------------------------------------------
 
-http.createServer(app).listen(app.get('port'), function()
+var s = app.listen(app.get('port'), function()
 {
 	app.logger.info('Express server listening on port ' + app.get('port'));
 });
-

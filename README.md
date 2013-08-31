@@ -49,11 +49,8 @@ TBD.
 
 ## TODO before ship
 
-- editing topics
-- do something useful when topics are flagged
+- presentation mode, aka full screen mode (arrow keys to navigate)
 - show winning topics more clearly
-- deleting topics
-- deleting agendas
-- deleting account
-- API
+- implement delete account
+- implement an API
 - make it a js in-page app

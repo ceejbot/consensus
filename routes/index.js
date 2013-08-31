@@ -10,6 +10,7 @@ var
 
 exports.index = function(request, response)
 {
+	console.log('index');
 	Agenda.all()
 	.then(function(agendas)
 	{
@@ -23,18 +24,18 @@ exports.index = function(request, response)
 	}).done();
 };
 
-var AUDIENCE = 'http://localhost:3000';
 var PERSONA = 'https://verifier.login.persona.org:443/verify';
 
 exports.signin = function(request, response)
 {
+
 	var opts =
 	{
 		uri: PERSONA,
 		json:
 		{
 			assertion: request.body.assertion,
-			audience: AUDIENCE
+			audience: request.headers.host
 		}
 	};
 
