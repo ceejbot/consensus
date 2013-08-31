@@ -24,7 +24,7 @@
 		"express-validator": "*",
 		"jade":              "*",
 		"keygrip":           "*",
-		"level-session":     "*",
+		"level-session":     "git://github.com/ceejbot/node-level-session.git#callback-on-destroy",
 		"level-sublevel":    "*",
 		"leveldown":         "*",
 		"levelup":           "*",
