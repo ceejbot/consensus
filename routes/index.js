@@ -10,7 +10,6 @@ var
 
 exports.index = function(request, response)
 {
-	console.log('index');
 	Agenda.all()
 	.then(function(agendas)
 	{
@@ -374,9 +373,9 @@ exports.topic = function(request, response)
 	Topic.get(request.params.tid)
 	.then(function(topic)
 	{
-		if (!topic || (Array.isArray(topic) && topic.length === 0))
+		if (!topic)
 		{
-			request.app.logger.info('topic not found: ' + request.params.id, err);
+			request.app.logger.info('topic not found: ' + request.params.tid);
 			request.flash('error', 'That topic doesn\'t exist.');
 			response.redirect('/');
 			return;
@@ -419,7 +418,7 @@ exports.topic = function(request, response)
 	})
 	.fail(function(err)
 	{
-		request.app.logger.error('error fetching topic: ' + request.params.id, err);
+		request.app.logger.error('topic() error: ' + request.params.tid, err);
 		request.flash('error', err.message);
 		response.redirect('/');
 	}).done();
@@ -446,7 +445,7 @@ exports.newTopic = function newTopic(request, response)
 	});
 };
 
-exports.handleNewTopic = function handleNewTopic(request, response)
+exports.handleNewTopic = function(request, response)
 {
 	var aid = request.params.id;
 	var owner = response.locals.authed_user;
@@ -477,6 +476,7 @@ exports.handleNewTopic = function handleNewTopic(request, response)
 		})
 		.then(function()
 		{
+			request.app.logger.info(topic, 'topic created by ' + owner.key);
 			request.flash('success', 'Topic created.');
 			response.redirect('/topics/' + topic.key);
 		}).fail(function(err)
@@ -530,7 +530,7 @@ exports.editTopic = function(request, response)
 	})
 	.fail(function(err)
 	{
-		request.app.logger.error('error fetching topic: ' + request.params.tid, err);
+		request.app.logger.error('editTopic() error fetching topic: ' + request.params.tid, err);
 		request.flash('error', err.message);
 		response.redirect('/');
 	}).done();
@@ -572,7 +572,7 @@ exports.handleEditTopic = function(request, response)
 	})
 	.fail(function(err)
 	{
-		request.app.logger.error(err, 'error fetching topic: ' + request.params.id);
+		request.app.logger.error(err, 'handleEditTopic() error fetching topic: ' + request.params.tid);
 		request.flash('error', err.message);
 		response.redirect('/topics/' + request.params.tid);
 	}).done();

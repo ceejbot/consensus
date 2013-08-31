@@ -28,15 +28,16 @@ block content
 			&nbsp;
 			button.btn.color2a(type="submit") Save
 
-	#deleteModal.modal.fade.col-4(tabindex="-1", role="dialog", aria-labelledby="deleteModelLabel", aria-hidden="true")
-		.modal-dialog
-			.modal-content
-				.modal-header
-					button.close(data-dismiss="modal", type="button", aria-hidden="true") &times;
-					h3.modal-title Delete this agenda?
-				.modal-body
-					p This will also delete all the agenda's topics. You cannot undo this action. 
-				.modal-footer
-					form(method="POST", action="/agendas/#{agenda.key}/delete")
-						button.btn.color2(data-dismiss="modal", type="button") Cancel
-						button.btn.btn-danger.color2a(type="submit") Delete
+	- if (locals.agenda)
+		#deleteModal.modal.fade.col-4(tabindex="-1", role="dialog", aria-labelledby="deleteModelLabel", aria-hidden="true")
+			.modal-dialog
+				.modal-content
+					.modal-header
+						button.close(data-dismiss="modal", type="button", aria-hidden="true") &times;
+						h3.modal-title Delete this agenda?
+					.modal-body
+						p This will also delete all the agenda's topics. You cannot undo this action. 
+					.modal-footer
+						form(method="POST", action="/agendas/#{agenda.key}/delete")
+							button.btn.color2(data-dismiss="modal", type="button") Cancel
+							button.btn.btn-danger.color2a(type="submit") Delete

@@ -13,20 +13,20 @@
 	},
 	"devDependencies":
 	{
-		"chai": "~1.7.2",
-		"mocha": "~1.12.0"
+		"chai":  "*",
+		"mocha": "*"
 	},
 	"dependencies":
 	{
+		"express.io":        "*",
+		"leveldown":         "*",
 		"bunyan":            "*",
 		"connect-flash":     "*",
-		"express.io":        "*",
 		"express-validator": "*",
 		"jade":              "*",
 		"keygrip":           "*",
 		"level-session":     "git://github.com/ceejbot/node-level-session.git#callback-on-destroy",
 		"level-sublevel":    "*",
-		"leveldown":         "*",
 		"levelup":           "*",
 		"lodash":            "*",
 		"marked":            "*",

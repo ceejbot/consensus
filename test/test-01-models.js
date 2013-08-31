@@ -11,3 +11,8 @@ describe('Consensus models', function()
 {
 	it('have tests');
 });
+
+describe('api', function()
+{
+	it('has tests');
+})
