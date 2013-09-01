@@ -52,7 +52,7 @@ The CSS framework is [Bootstrap 3.0](http://getbootstrap.com). You should be abl
 
 ## API
 
-TBD.
+A few json endpoints are implemented. Eventually there will be more in support of whatever in-browser interactivity I need.
 
 ## Hat-tips
 
@@ -64,8 +64,6 @@ This project was greatly enhanced by the following open-source projects:
 * [Bootstrap](http://getbootstrap.com/)
 * [The League of Moveable Type](http://www.theleagueofmoveabletype.com/)
 * [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
-
-
 
 ## TODO before ship
 
