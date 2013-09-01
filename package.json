@@ -21,7 +21,6 @@
 		"express.io":        "*",
 		"leveldown":         "*",
 		"bunyan":            "*",
-		"connect-flash":     "*",
 		"express-validator": "*",
 		"jade":              "*",
 		"keygrip":           "*",

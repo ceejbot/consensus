@@ -48,6 +48,8 @@ Clone the repo or `npm install consensus`. Copy the sample config file in `confi
 
 You may also pass in the location of the config file using the `CONFIG_FILE` environment variable.
 
+Install dependencies: `npm install`.
+
 Then start the app: `npm start`.
 
 ## Customizing
@@ -62,6 +64,7 @@ A few json endpoints are implemented. Eventually there will be more in support o
 
 This project was greatly enhanced by the following open-source projects:
 
+* [Mozilla Persona](https://www.mozilla.org/en-US/persona/)
 * [levelup](https://github.com/rvagg/node-levelup)
 * [express.js](http://expressjs.com)
 * [Reveal.js](http://lab.hakim.se/reveal-js/)
@@ -69,11 +72,13 @@ This project was greatly enhanced by the following open-source projects:
 * [The League of Moveable Type](http://www.theleagueofmoveabletype.com/)
 * [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
 
-## TODO before ship
+## TODO before I call it 1.0
 
 - show winning topics more clearly
 - implement delete account
 - implement an API
 - make it a js in-page app
+- with socket.io streaming updates
 - improve config & deployment story
+- maybe write *one* test
 
