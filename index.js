@@ -5,11 +5,12 @@ var
 	fs          = require('fs'),
 	http        = require('http'),
 	path        = require('path'),
-	routes      = require('./routes'),
-	api         = require('./routes/api'),
 	util        = require('util'),
 	Person      = require('./lib/Person'),
-	Controller  = require('./lib/controller')
+	Controller  = require('./lib/controller'),
+	routes      = require('./routes'),
+	auth        = require('./routes/auth'),
+	api         = require('./routes/api')
 	;
 
 var app = express();
@@ -187,8 +188,8 @@ if ('development' == app.get('env'))
 // ----------------------------------------------------------------------
 
 app.get('/', routes.index);
-app.post('/auth/signin', routes.signin);
-app.post('/auth/signout', routes.signout);
+app.post('/auth/signin', auth.signin);
+app.post('/auth/signout', auth.signout);
 
 app.get('/agendas/new', requireAuthedUser, routes.newAgenda);
 app.post('/agendas/new', requireAuthedUser, routes.handleNewAgenda);

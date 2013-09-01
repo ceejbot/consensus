@@ -1,12 +1,10 @@
 var
-	assert    = require('assert'),
-	requester = require('request'),
-	Agenda    = require('../lib/Agenda'),
-	Topic     = require('../lib/Topic'),
-	Vote      = require('../lib/Vote'),
-	Person    = require('../lib/Person'),
-	marked    = require('marked'),
-	util      = require('util')
+	Agenda = require('../lib/Agenda'),
+	Topic  = require('../lib/Topic'),
+	Vote   = require('../lib/Vote'),
+	Person = require('../lib/Person'),
+	marked = require('marked'),
+	util   = require('util')
 	;
 
 exports.index = function(request, response)
@@ -22,66 +20,6 @@ exports.index = function(request, response)
 		request.flash('error', 'Warning: couldn\'t fetch agendas.');
 		response.render('index', { title: 'Consensus', agendas: [] });
 	}).done();
-};
-
-var PERSONA = 'https://verifier.login.persona.org:443/verify';
-
-exports.signin = function(request, response)
-{
-
-	var opts =
-	{
-		uri: PERSONA,
-		json:
-		{
-			assertion: request.body.assertion,
-			audience: request.headers.host
-		}
-	};
-
-	requester.post(opts, function(err, res, verified)
-	{
-		if (err)
-		{
-			request.app.logger.error(err, 'error calling persona verifier:', err.message);
-			return;
-		}
-		// verified should have fields: status, email, audience, expires, issuer
-		if (verified.status === 'okay')
-		{
-			response.app.controller.findOrCreatePerson(verified.email)
-			.then(function(person)
-			{
-				if (!person)
-				{
-					response.redirect('/');
-					return;
-				}
-
-				request.app.logger.info('login for ' + person.email + ' recorded');
-				request.session.set('user_id', person.email);
-				response.json({ page: '/' });
-				// set flash message
-				// redirect to index
-			})
-			.fail(function(err)
-			{
-				response.app.logger.warn(err);
-				// set flash message
-				// redirect to index
-			}).done();
-		}
-		else
-		{
-			request.app.logger.error('persona verifier failed:', (verified.reason || verified.error));
-		}
-	});
-};
-
-exports.signout = function signout(request, response)
-{
-	request.session.delAll();
-	response.redirect('/');
 };
 
 exports.relevantAgendas = function relevantAgendas(request, response)
@@ -284,7 +222,7 @@ exports.handleEditAgenda = function(request, response)
 	})
 	.then(function()
 	{
-		request.flash('Your agenda has been marked as inactive.');
+		request.flash('Your agenda has been updated.');
 		response.redirect('/agendas/' + request.params.id);
 
 	}).fail(function(err)
@@ -551,7 +489,7 @@ exports.handleNewTopic = function(request, response)
 exports.editTopic = function(request, response)
 {
 	var owner = response.locals.authed_user;
-	var locals = {};
+	var locals = { title: 'Edit topic' };
 
 	Topic.get(request.params.tid)
 	.then(function(topic)
@@ -772,7 +710,7 @@ exports.settings = function(request, response)
 	response.render('settings',
 	{
 		person: response.locals.authed_user,
-		title: 'Your account'
+		title: 'Your profile'
 	});
 };
 
@@ -790,7 +728,7 @@ exports.handleSettings = function(request, response)
 		var locals =
 		{
 			person: response.locals.authed_user,
-			title: 'Your account'
+			title: 'Your profile'
 		};
 		response.render('settings', locals);
 		return;
@@ -825,7 +763,7 @@ exports.profile = function(request, response)
 	{
 		if (!person)
 		{
-			request.flash('warning', 'Profile for #{uid} not found.');
+			request.flash('warning', 'Profile for ' + uid + ' not found.');
 			response.redirect('/');
 		}
 
