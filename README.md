@@ -6,6 +6,8 @@ Imagine a Google Moderator that didn't make you tear your hair out. That's Conse
 
 Consensus is a tool for counting votes on topics proposed by its users. Topics are grouped into "agendas", which are lists of things to consider at meeting. Any Consensus user can create an agenda. Any Consensus user can propose a topic for any agenda. Votes are private *only* in the sense that they're not exposed by default in the UI, though you could show them if you wanted.
 
+[Here's a quick demo movie showing what it does](https://cloudup.com/cWPa8l1RdsF).
+
 Use it anywhere where you'd like a medium-sized group of people to vote on things regularly.
 
 ### Features
@@ -15,6 +17,7 @@ Use it anywhere where you'd like a medium-sized group of people to vote on thing
 - anyone can add topics to an agenda
 - everyone can vote on those topics
 - markdown formatting for everything with a description
+- presentation mode for meetings courtesy of [Reveal.js](http://lab.hakim.se/reveal-js/)
 
 ## Operational requirements
 
@@ -43,13 +46,29 @@ You may also pass in the location of the config file using the `CONFIG_FILE` env
 
 Then start the app: `npm start`.
 
+## Customizing
+
+The CSS framework is [Bootstrap 3.0](http://getbootstrap.com). You should be able to drop in any Bootstrap theme or customized CSS to style the app your way.
+
 ## API
 
 TBD.
 
+## Hat-tips
+
+This project was greatly enhanced by the following open-source projects:
+
+* [levelup](https://github.com/rvagg/node-levelup)
+* [express.js](http://expressjs.com)
+* [Reveal.js](http://lab.hakim.se/reveal-js/)
+* [Bootstrap](http://getbootstrap.com/)
+* [The League of Moveable Type](http://www.theleagueofmoveabletype.com/)
+* [Font Awesome](http://fortawesome.github.io/Font-Awesome/)
+
+
+
 ## TODO before ship
 
-- presentation mode, aka full screen mode (arrow keys to navigate)
 - show winning topics more clearly
 - implement delete account
 - implement an API
