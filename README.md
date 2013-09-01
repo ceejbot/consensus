@@ -2,6 +2,8 @@
 
 Imagine a Google Moderator that didn't make you tear your hair out. That's Consensus.
 
+[![NPM](https://nodei.co/npm/consensus.png)](https://nodei.co/npm/consensus/)
+
 ## What's that when it's at home?
 
 Consensus is a tool for counting votes on topics proposed by its users. Topics are grouped into "agendas", which are lists of things to consider at meeting. Any Consensus user can create an agenda. Any Consensus user can propose a topic for any agenda. Votes are private *only* in the sense that they're not exposed by default in the UI, though you could show them if you wanted.
@@ -13,15 +15,16 @@ Use it anywhere where you'd like a medium-sized group of people to vote on thing
 ### Features
 
 - automatic account provisioning & signin via [Mozilla Persona](https://www.mozilla.org/en-US/persona/)
-- anyone can set up an agenda aka meeting
-- anyone can add topics to an agenda
-- everyone can vote on those topics
+- "agendas" to group proposed topics by meeting
+- open topic proposal
+- open voting
+- changeable votes
 - markdown formatting for everything with a description
-- presentation mode for meetings courtesy of [Reveal.js](http://lab.hakim.se/reveal-js/)
+- presentation mode for meetings to review open requests
 
 ## Operational requirements
 
-Consensus stores its data in a set of leveldb databases, which are saved on disk. You'll wish to have sufficient fast disk to support your expected use. For small, less-active installations, just about anything will do. You'll also want to back those files up if the data Consensus stores is valuable to you.
+Consensus stores its data in a set of leveldb databases, which are saved on disk. You'll wish to have sufficient fast disk to support your expected use. For small, less-active installations, just about anything will do. You'll also want to back those files up if the data Consensus stores is valuable to you. 
 
 Consensus makes no attempt to restrict access to the data or to account creation. If you have access to the site, you can create an account using [Mozilla Persona](https://www.mozilla.org/en-US/persona/). It is intended to be used behind a firewall. Note that it must be able to make outgoing connections at least to `verifier.login.persona.org:443` to verify user identities.
 
@@ -31,6 +34,7 @@ Clone the repo or `npm install consensus`. Copy the sample config file in `confi
 
 ```javascript
 {
+	"name": "My Site Name",
 	"port":    3000, // may be overridden by setting PORT env var
 	"dbpath":  "/var/db/consensus",
 	"logging": 
@@ -71,3 +75,5 @@ This project was greatly enhanced by the following open-source projects:
 - implement delete account
 - implement an API
 - make it a js in-page app
+- improve config & deployment story
+
