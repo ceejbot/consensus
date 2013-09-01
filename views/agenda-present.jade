@@ -18,6 +18,8 @@ html
 						h3.title= topic.title
 						.well!= topic.description
 						.proposer 
+							small Final tally: #{topic.tally}
+							br
 							small Suggested by #{topic.owner.name} &lt;#{topic.owner.email}&gt;
 
 		script(src="http://code.jquery.com/jquery.js")

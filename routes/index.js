@@ -5,7 +5,8 @@ var
 	Topic     = require('../lib/Topic'),
 	Vote      = require('../lib/Vote'),
 	Person    = require('../lib/Person'),
-	marked    = require('marked')
+	marked    = require('marked'),
+	util      = require('util')
 	;
 
 exports.index = function(request, response)
@@ -80,6 +81,7 @@ exports.signin = function(request, response)
 exports.signout = function signout(request, response)
 {
 	request.session.delAll();
+	response.redirect('/');
 };
 
 exports.relevantAgendas = function relevantAgendas(request, response)
@@ -778,12 +780,13 @@ exports.handleSettings = function(request, response)
 {
 	var person = response.locals.authed_user;
 
-	request.assert('iavatar', 'avatar is not a valid url').isUrl();
+	if (request.body.avatar)
+		request.assert('iavatar', 'avatar is not a valid url').isUrl();
 
 	var errors = request.validationErrors();
 	if (errors)
 	{
-		request.flash(util.inspect(errors));
+		request.flash('error', util.inspect(errors));
 		var locals =
 		{
 			person: response.locals.authed_user,
@@ -802,7 +805,7 @@ exports.handleSettings = function(request, response)
 	.then(function()
 	{
 		request.flash('success', 'You have updated your profile.');
-		response.redirect('/');
+		response.redirect('/u/' + person.key);
 	})
 	.fail(function(err)
 	{
