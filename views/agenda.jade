@@ -11,7 +11,7 @@ mixin topicRow(topic)
 			a(href="/topics/#{topic.key}")= topic.title
 		td= topic.proposedWhen()
 		td
-			- if (isOwner)
+			- if (isOwner && (topic.state !== 'closed'))
 				form.form-inline(method="POST", action="/topics/#{topic.key}/close")
 					button.btn.color4b(type="submit", value="close")
 						i.icon-large.icon-check
