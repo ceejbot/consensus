@@ -198,6 +198,7 @@ app.post('/agendas/:id/open', requireAuthedUser, routes.handleOpenAgenda);
 app.get('/agendas/:id/edit', requireAuthedUser, routes.editAgenda);
 app.post('/agendas/:id/edit', requireAuthedUser, routes.handleEditAgenda);
 app.post('/agendas/:id/delete', requireAuthedUser, routes.handleDeleteAgenda);
+app.get('/agendas/:id/present', routes.presentAgenda);
 app.get('/agendas/:id', routes.agenda);
 
 app.get('/agendas/:id/topics/new', requireAuthedUser, routes.newTopic);

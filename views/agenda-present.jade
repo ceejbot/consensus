@@ -1,0 +1,37 @@
+doctype 5
+html
+	head
+		title= title
+		meta(http-equiv="X-UA-Compatible", content="IE=Edge")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		link(rel='stylesheet', href='/css/reveal.min.css', media="screen")
+		link(rel="stylesheet", href="/css/consensus.css", id="theme")
+	body
+		.reveal
+			.slides
+				section
+					h2= title
+					small &nbsp; run by #{agenda.owner_id}
+					!= description
+				- each topic in tjson
+					section
+						h3.title= topic.title
+						.well!= topic.description
+						.proposer 
+							small Suggested by #{topic.owner.name} &lt;#{topic.owner.email}&gt;
+
+		script(src="http://code.jquery.com/jquery.js")
+		script(src='/js/reveal.min.js')
+		script.
+			$(function() 
+			{ 
+				Reveal.initialize(
+				{
+					transition: 'linear',
+					center:     'false',
+				});
+				Reveal.slide(0, 0);
+			});
+
+
+	

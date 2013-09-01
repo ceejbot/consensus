@@ -132,6 +132,58 @@ exports.agenda = function(request, response)
 	}).done();
 };
 
+exports.presentAgenda = function(request, response)
+{
+	var locals = {};
+	var people = {};
+
+	Agenda.get(request.params.id)
+	.then(function(agenda)
+	{
+		locals.agenda = agenda;
+		locals.title = agenda.title;
+		locals.description = marked(agenda.description);
+
+		people[agenda.owner_id] = true;
+
+		return agenda.fetchTopics();
+	})
+	.then(function(topics)
+	{
+		locals.topics = topics.open;
+
+		for (var i = 0; i < locals.topics.length; i++)
+		{
+			var t = locals.topics[i];
+			people[t.owner_id] = true;
+		}
+
+		return Person.get(Object.keys(people));
+	})
+	.then(function(proposers)
+	{
+		for (var i = 0; i < proposers.length; i++)
+			people[proposers[i].key] = proposers[i];
+
+		locals.tjson = [];
+		for (var i = 0; i < locals.topics.length; i++)
+		{
+			var t = locals.topics[i].toJSON();
+			t.description = marked(t.description);
+			t.owner = people[t.owner_id].toJSON();
+			locals.tjson.push(t);
+		}
+
+		response.render('agenda-present', locals);
+	})
+	.fail(function(err)
+	{
+		response.app.logger.error(err);
+		request.flash('error', 'That agenda doesn\'t exist.');
+		response.redirect('/');
+	}).done();
+};
+
 exports.newAgenda = function(request, response)
 {
 	response.render('agenda-edit', { title: 'New agenda' });
