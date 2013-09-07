@@ -4,6 +4,7 @@ var
 	exValidator = require('express-validator'),
 	fs          = require('fs'),
 	http        = require('http'),
+	multiparty  = require('connect-multiparty'),
 	path        = require('path'),
 	util        = require('util'),
 	Person      = require('./lib/Person'),
@@ -170,7 +171,7 @@ app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger({stream: logstream, format: 'tiny'}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.bodyParser());
+app.use(multiparty.bodyParser());
 app.use(exValidator());
 app.use(express.methodOverride());
 app.use(express.cookieParser(process.env.NOMNOMNOM));
