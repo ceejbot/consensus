@@ -3,7 +3,9 @@ extends layout
 mixin agendaRow(agenda)
 	tr
 		td
-			a(href="/agendas/#{agenda.key}")= agenda.title
+			a(href="/agendas/#{agenda.key}")
+				i.icon-tasks  &nbsp;
+				= agenda.title
 		td
 			a(href="/u/#{agenda.owner_id}")= agenda.owner_id
 

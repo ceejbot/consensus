@@ -2,12 +2,14 @@ extends layout
 
 block content
 	.page-header
-		h1= topic.title
+		h3
+			a(href="/agendas/#{agenda.key}")
+				i.icon-tasks &nbsp;
+				=  agenda.title
+		h2: i.icon-large.icon-question &nbsp;
+			= topic.title
 		small suggested by 
 			a(href="/u/#{topic.owner_id}")= topic.owner_id
-			br
-			| Proposed for discussion at 
-			a(href="/agendas/#{agenda.key}")= agenda.title
 	.well!= description
 	p Current tally: 
 		b= topic.tally
