@@ -10,6 +10,8 @@ Consensus is a tool for counting votes on topics proposed by its users. Topics a
 
 [Here's a quick demo movie showing what it does](https://cloudup.com/cWPa8l1RdsF).
 
+Better yet: here's a [demo site](http://demo.consensoid.io/) that you can try out.
+
 Use it anywhere where you'd like a medium-sized group of people to vote on things regularly.
 
 ### Features

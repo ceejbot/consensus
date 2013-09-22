@@ -1,6 +1,6 @@
 {
 	"name":        "consensus",
-	"version":     "0.0.2",
+	"version":     "0.0.3",
 	"description": "vote for topics for your next meeting",
 	"keywords":    [ "voting", "topics", "moderator" ],
 	"author":      "C J Silverio <ceejceej@gmail.com>",
@@ -31,10 +31,10 @@
 		"lodash":             "*",
 		"marked":             "*",
 		"moment":             "*",
-		"node-uuid":          "*",
 		"p-promise":          "*",
 		"polyclay":           "*",
 		"polyclay-levelup":   "*",
+		"puid":               "*",
 		"request":            "*",
 		"through":            "*"
 	},
