@@ -1,5 +1,12 @@
 extends layout
 
+block append scripts
+	script(src="https://cdn.moot.it/1/moot.min.js")
+
+block append styles
+	link(rel="stylesheet", href="https://cdn.moot.it/1/moot.css")
+	link(rel="stylesheet", href="/css/style.css")
+
 block content
 	.page-header
 		h3
@@ -56,5 +63,8 @@ block content
 						a(href="mailto:#{voters[i]}")= voters[i]
 						|    
 			- else
-				p No one has voted on this topic yet.			
-
+				p No one has voted on this topic yet.
+		hr
+		.panel.color3c
+			.mootbox
+				a.moot(href="https://moot.it/i/consensus/topics:#{topic.key}") Comment on this topic.		

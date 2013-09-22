@@ -6,8 +6,9 @@ html
 		title= title
 		meta(http-equiv="X-UA-Compatible", content="IE=Edge")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-		link(rel='stylesheet', href='/css/bootstrap.min.css', media="screen")
-		link(href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css", rel="stylesheet")
+		block styles
+			link(rel='stylesheet', href='/css/bootstrap.min.css', media="screen")
+			link(href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css", rel="stylesheet")
 	body
 		nav.navbar.navbar-static-top(role="navigation")
 			.navbar-header
@@ -61,16 +62,17 @@ html
 						= locals.flash.success[i]
 		.container
 			block content
-		script(src="http://code.jquery.com/jquery.js")
-		script(src='/js/bootstrap.min.js')
-		script(src="https://login.persona.org/include.js")
-		- if (locals.authed_user)
-			script.
-				var authed_user = '#{authed_user.email}';
-		- else
-			script.
-				var authed_user = null;
-		script(src="/js/persona.js")
+		block scripts
+			script(src="http://code.jquery.com/jquery.js")
+			script(src='/js/bootstrap.min.js')
+			script(src="https://login.persona.org/include.js")
+			- if (locals.authed_user)
+				script.
+					var authed_user = '#{authed_user.email}';
+			- else
+				script.
+					var authed_user = null;
+			script(src="/js/persona.js")
 		hr
 		footer(style="padding-bottom: 20px;")
 			.container
