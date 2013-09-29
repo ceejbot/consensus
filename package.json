@@ -8,8 +8,9 @@
 	"main":        "index.js",
 	"scripts":
 	{
-		"start": "node index.js | ./node_modules/.bin/bunyan -o short",
-		"test":  "mocha -R spec test/*.js"
+		"start":   "node index.js | ./node_modules/.bin/bunyan -o short",
+		"test":    "mocha -R spec test/*.js",
+		"logtail": "tail -f /var/log/consensus.log | ./node_modules/.bin/bunyan -o short"
 	},
 	"devDependencies":
 	{
