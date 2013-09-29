@@ -8,12 +8,6 @@
  * Designed and built with all the love in the world by @mdo and @fat.
  */
 
-@font-face {
-  font-family: 'Junction';
-  src: url('/font/Junction-webfont.eot');
-  src: url('/font/Junction-webfont.eot?#iefix') format('embedded-opentype'), url('/font/Junction-webfont.woff') format('woff'), url('/font/Junction-webfont.ttf') format('truetype'), url('/font/Junction-webfont.svg#JunctionRegular') format('svg');
-}
-
 /*! normalize.css v2.1.0 | MIT License | git.io/normalize */
 
 article,
@@ -306,7 +300,7 @@ html {
 }
 
 body {
-  font-family: "Junction", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Asap", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.428571429;
   color: #333333;
@@ -468,7 +462,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Junction", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Asap", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
 }
