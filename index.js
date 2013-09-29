@@ -231,8 +231,13 @@ app.get('/ping', function(request, response)
 app.get('/api/1/people/:id',  api.person);
 app.get('/api/1/people',      api.people);
 
-app.get('/api/1/agendas/:id', api.agenda);
-app.get('/api/1/agendas',     api.agendas);
+app.get('/api/1/agendas/:id',        api.agenda);
+app.get('/api/1/agendas/:id/topics', api.agendaTopics);
+app.get('/api/1/agendas',            api.agendas);
+
+app.get('/api/1/topics/:id',       api.topic);
+app.get('/api/1/topics/:id/votes', api.topicVotes);
+app.get('/api/1/topics',           api.topics);
 
 // ----------------------------------------------------------------------
 

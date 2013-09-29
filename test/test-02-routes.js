@@ -7,7 +7,7 @@ var
 	should = chai.should()
 	;
 
-describe('Consensus models', function()
+describe('routes', function()
 {
 	it('tests exist');
-});
+})
