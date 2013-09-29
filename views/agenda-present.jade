@@ -33,9 +33,15 @@ html
 				{
 					transition: 'linear',
 					center:     'false',
+					keyboard:
+					{
+						// go back when the enter key is pressed
+						13: function() { history.go(-1); }, 
+					}
 				});
 				Reveal.slide(0, 0);
 			});
+
 
 
 	
