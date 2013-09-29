@@ -236,6 +236,8 @@ app.get('/api/1/people',      api.people);
 
 app.get('/api/1/agendas/:id',        api.agenda);
 app.get('/api/1/agendas/:id/topics', api.agendaTopics);
+app.post('/api/1/agendas/new',       requireAuthedUser, api.handleNewAgenda);
+app.patch('/api/1/agendas/:id',      requireAuthedUser, api.handleEditAgenda);
 app.get('/api/1/agendas',            api.agendas);
 
 app.get('/api/1/topics/:id',       api.topic);

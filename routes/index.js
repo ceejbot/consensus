@@ -231,7 +231,6 @@ exports.handleEditAgenda = function(request, response)
 		request.flash('error', err.message);
 		response.redirect('/');
 	}).done();
-
 };
 
 exports.handleCloseAgenda = function(request, response)

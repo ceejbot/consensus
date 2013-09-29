@@ -64,6 +64,68 @@ exports.agendas = function(request, response)
 	Agenda.stream().pipe(response);
 };
 
+exports.handleNewAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+	var opts =
+	{
+		title: request.sanitize('ititle').xss(),
+		description: request.sanitize('idesc').xss(),
+		owner: owner
+	};
+
+	var agenda;
+
+	Agenda.create(opts)
+	.then(function(created)
+	{
+		agenda = created;
+		return owner.addAgenda(agenda.key);
+	})
+	.then(function()
+	{
+		response.json(201, agenda.toJSON());
+	}).fail(function(err)
+	{
+		request.app.logger.error(err);
+		response.json(500, err);
+	}).done();
+};
+
+exports.handleEditAgenda = function(request, response)
+{
+	var owner = response.locals.authed_user;
+
+	Agenda.get(request.params.id)
+	.then(function(agenda)
+	{
+		if (!agenda)
+		{
+			response.send(404);
+			return;
+		}
+
+		if (agenda.owner_id !== owner.email)
+		{
+			response.send(403);
+			return;
+		}
+
+		agenda.title = request.sanitize('ititle').xss();
+		agenda.description = request.sanitize('idesc').xss();
+		return agenda.save();
+	})
+	.then(function(reply)
+	{
+		if (reply)
+			response.json(200, agenda.toJSON());
+	}).fail(function(err)
+	{
+		response.app.logger.error(err);
+		response.json(500, err);
+	}).done();
+};
+
 exports.agendaTopics = function(request, response)
 {
 	Agenda.get(request.params.id)
