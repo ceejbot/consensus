@@ -35,6 +35,8 @@ var sessiondb = require('level-session')(
 	keys:     config.secrets
 });
 
+var package = require('./package.json');
+
 // ----------------------------------------------------------------------
 // middleware
 
@@ -74,6 +76,7 @@ function flash(request, response, next)
 function initializePageLocals(request, response, next)
 {
 	response.locals.sitename = config.name;
+	response.locals.version = package.version;
 
 	request.session.get('user_id', function(err, user_id)
 	{
