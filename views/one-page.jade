@@ -32,3 +32,11 @@ block content
 					+agendaRow(agenda)
 		p 
 			a.btn.btn-lg.color2(href="/agendas/new") Create a new agenda &raquo;
+
+block append scripts
+	script.
+		var io = io.connect();
+		io.emit('ready', { hey: 'server'}, function(data)
+		{
+			console.log(data);
+		})

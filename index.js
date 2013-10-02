@@ -249,20 +249,12 @@ app.get('/api/1/topics/:id/votes', api.topicVotes);
 app.get('/api/1/topics',           api.topics);
 
 // add socket io routes
-app.io.route('ready', io.onReady);
-
-app.io.route('/io/1/people/:id',         io.person);
-app.io.route('/io/1/people',             io.people);
-app.io.route('/io/1/agendas/:id',        io.agenda);
-app.io.route('/io/1/agendas/:id/topics', io.agendaTopics);
-// app.post('/io/1/agendas/new',            requireAuthedUser, io.handleNewAgenda);
-// app.patch('/io/1/agendas/:id',           requireAuthedUser, io.handleEditAgenda);
-app.io.route('/io/1/agendas',            io.agendas);
-app.io.route('/io/1/topics/:id',         io.topic);
-app.io.route('/io/1/topics/:id/votes',   io.topicVotes);
-app.io.route('/io/1/topics',             io.topics);
-
-
+app.get('/realtime',         io.keepItReal);
+app.io.route('io.1.ready',   io.onReady);
+app.io.route('io.1.person',  io.person);
+app.io.route('io.1.people',  io.peopleHandlers);
+app.io.route('io.1.agendas', io.agendaHandlers);
+app.io.route('io.1.topics',  io.topicHandlers);
 
 // ----------------------------------------------------------------------
 

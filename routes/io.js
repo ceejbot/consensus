@@ -9,206 +9,96 @@ var
 
 var logger;
 
+exports.keepItReal = function(request, response)
+{
+	response.render('one-page');
+};
+
 exports.setLogger = function(log)
 {
-	logger = log;
-}
+	logger = log.child({ type: 'socket.io' });
+};
 
 exports.onReady = function(request)
 {
 	var data = request.data;
-	logger.info('socket.io ready event');
-	var reply = { success: 'ready freddy' };
+	logger.info('ready');
+
+	// anything to do? log only?
+
+	var reply = { success: 'ready freddy', data: data };
 	request.io.respond(reply);
-}
+};
 
 exports.person = function(request)
 {
-	var email = request.params.id;
+	var email = request.id;
 	Person.get(email)
 	.then(function(person)
 	{
 		if (!person)
-			return request.send(404);
+			return request.io.respond({ okay: false });
 
-		request.io.respond(person.toJSON());
+		request.io.respond({ okay: true, person: person.toJSON() });
 	})
 	.fail(function(err)
 	{
-		request.io.respond(500, err);
+		logger.error({ error: err }, 'while fetching person id=' +email);
+		request.io.respond({ okay: false, error: true });
 	}).done();
+
 };
 
-exports.people = function(request)
+exports.peopleHandlers =
 {
-	Person.all()
-	.then(function(people)
+	create: function(request)
 	{
-		var result = _.map(people, function(p)
-		{
-			return p.toJSON();
-		});
-		request.io.respond(result);
-	})
-	.fail(function(err)
+		// TODO
+	},
+
+	update: function(request)
 	{
-		request.app.logger.error(err);
-		request.io.respond(500, err);
-	}).done();
+		// TODO
+	},
 };
 
-exports.agenda = function(request)
+exports.agendaHandlers =
 {
-	Agenda.get(request.params.id)
-	.then(function(agenda)
+	create: function(request)
 	{
-		if (!agenda)
-			response.send(404);
-		else
-			request.io.respond(200, agenda.toJSON());
-	})
-	.fail(function(err)
+		// TODO
+	},
+
+	update: function(request)
 	{
-		request.app.logger.error(err);
-		request.io.respond({ error: err });
-	}).done();
+		// TODO
+	},
+
+	close: function(request)
+	{
+		// TODOs
+	},
 };
 
-exports.agendas = function(request)
+exports.topicHandlers =
 {
-	Agenda.stream().pipe(response);
-};
-
-exports.handleNewAgenda = function(request)
-{
-	var owner = response.locals.authed_user;
-	var opts =
+	create: function(request)
 	{
-		title: request.sanitize('ititle').xss(),
-		description: request.sanitize('idesc').xss(),
-		owner: owner
-	};
+		// TODO
+	},
 
-	var agenda;
+	update: function(request)
+	{
+		// TODO
+	},
 
-	Agenda.create(opts)
-	.then(function(created)
+	close: function(request)
 	{
-		agenda = created;
-		return owner.addAgenda(agenda.key);
-	})
-	.then(function()
-	{
-		request.io.respond(201, agenda.toJSON());
-	}).fail(function(err)
-	{
-		request.app.logger.error(err);
-		request.io.respond({ error: err });
-	}).done();
-};
+		// TODOs
+	},
 
-exports.handleEditAgenda = function(request)
-{
-	var owner = response.locals.authed_user;
-
-	Agenda.get(request.params.id)
-	.then(function(agenda)
+	vote: function(request)
 	{
-		if (!agenda)
-		{
-			response.send(404);
-			return;
-		}
 
-		if (agenda.owner_id !== owner.email)
-		{
-			response.send(403);
-			return;
-		}
-
-		agenda.title = request.sanitize('ititle').xss();
-		agenda.description = request.sanitize('idesc').xss();
-		return agenda.save();
-	})
-	.then(function(reply)
-	{
-		if (reply)
-			request.io.respond(200, agenda.toJSON());
-	}).fail(function(err)
-	{
-		response.app.logger.error(err);
-		request.io.respond({ error: err });
-	}).done();
-};
-
-exports.agendaTopics = function(request)
-{
-	Agenda.get(request.params.id)
-	.then(function(agenda)
-	{
-		if (!agenda)
-			return response.send(404);
-
-		agenda.fetchTopics()
-		.then(function(topics)
-		{
-			var result = _.map(topics, function(t)
-			{
-				return t.toJSON();
-			});
-			request.io.respond(200, result);
-		});
-	})
-	.fail(function(err)
-	{
-		request.app.logger.error(err);
-		request.io.respond({ error: err });
-	}).done();
-};
-
-exports.topic = function(request)
-{
-	Topic.get(request.params.id)
-	.then(function(topic)
-	{
-		if (!topic)
-			response.send(404);
-		else
-			request.io.respond(200, topic.toJSON());
-	})
-	.fail(function(err)
-	{
-		request.app.logger.error(err);
-		request.io.respond(500, err);
-	}).done();
-};
-
-exports.topics = function(request)
-{
-	Topic.stream().pipe(response);
-};
-
-exports.topicVotes = function(request)
-{
-	Topic.get(request.params.id)
-	.then(function(topic)
-	{
-		if (!topic)
-			return response.send(404);
-
-		topic.votes()
-		.then(function(votes)
-		{
-			var result = _.map(votes, function(t)
-			{
-				return t.toJSON();
-			});
-			request.io.respond(200, result);
-		});
-	})
-	.fail(function(err)
-	{
-		request.app.logger.error(err);
-		request.io.respond(500, err);
-	}).done();
+	},
 };
