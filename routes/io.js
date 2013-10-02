@@ -7,7 +7,22 @@ var
 	Person = require('../lib/Person')
 	;
 
-exports.person = function(request, response)
+var logger;
+
+exports.setLogger = function(log)
+{
+	logger = log;
+}
+
+exports.onReady = function(request)
+{
+	var data = request.data;
+	logger.info('socket.io ready event');
+	var reply = { success: 'ready freddy' };
+	request.io.respond(reply);
+}
+
+exports.person = function(request)
 {
 	var email = request.params.id;
 	Person.get(email)
@@ -16,15 +31,15 @@ exports.person = function(request, response)
 		if (!person)
 			return request.send(404);
 
-		response.json(person.toJSON());
+		request.io.respond(person.toJSON());
 	})
 	.fail(function(err)
 	{
-		response.json(500, err);
+		request.io.respond(500, err);
 	}).done();
 };
 
-exports.people = function(request, response)
+exports.people = function(request)
 {
 	Person.all()
 	.then(function(people)
@@ -33,16 +48,16 @@ exports.people = function(request, response)
 		{
 			return p.toJSON();
 		});
-		response.json(result);
+		request.io.respond(result);
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond(500, err);
 	}).done();
 };
 
-exports.agenda = function(request, response)
+exports.agenda = function(request)
 {
 	Agenda.get(request.params.id)
 	.then(function(agenda)
@@ -50,21 +65,21 @@ exports.agenda = function(request, response)
 		if (!agenda)
 			response.send(404);
 		else
-			response.json(200, agenda.toJSON());
+			request.io.respond(200, agenda.toJSON());
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond({ error: err });
 	}).done();
 };
 
-exports.agendas = function(request, response)
+exports.agendas = function(request)
 {
 	Agenda.stream().pipe(response);
 };
 
-exports.handleNewAgenda = function(request, response)
+exports.handleNewAgenda = function(request)
 {
 	var owner = response.locals.authed_user;
 	var opts =
@@ -84,15 +99,15 @@ exports.handleNewAgenda = function(request, response)
 	})
 	.then(function()
 	{
-		response.json(201, agenda.toJSON());
+		request.io.respond(201, agenda.toJSON());
 	}).fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond({ error: err });
 	}).done();
 };
 
-exports.handleEditAgenda = function(request, response)
+exports.handleEditAgenda = function(request)
 {
 	var owner = response.locals.authed_user;
 
@@ -118,15 +133,15 @@ exports.handleEditAgenda = function(request, response)
 	.then(function(reply)
 	{
 		if (reply)
-			response.json(200, agenda.toJSON());
+			request.io.respond(200, agenda.toJSON());
 	}).fail(function(err)
 	{
 		response.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond({ error: err });
 	}).done();
 };
 
-exports.agendaTopics = function(request, response)
+exports.agendaTopics = function(request)
 {
 	Agenda.get(request.params.id)
 	.then(function(agenda)
@@ -141,17 +156,17 @@ exports.agendaTopics = function(request, response)
 			{
 				return t.toJSON();
 			});
-			response.json(200, result);
+			request.io.respond(200, result);
 		});
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond({ error: err });
 	}).done();
 };
 
-exports.topic = function(request, response)
+exports.topic = function(request)
 {
 	Topic.get(request.params.id)
 	.then(function(topic)
@@ -159,21 +174,21 @@ exports.topic = function(request, response)
 		if (!topic)
 			response.send(404);
 		else
-			response.json(200, topic.toJSON());
+			request.io.respond(200, topic.toJSON());
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond(500, err);
 	}).done();
 };
 
-exports.topics = function(request, response)
+exports.topics = function(request)
 {
 	Topic.stream().pipe(response);
 };
 
-exports.topicVotes = function(request, response)
+exports.topicVotes = function(request)
 {
 	Topic.get(request.params.id)
 	.then(function(topic)
@@ -188,12 +203,12 @@ exports.topicVotes = function(request, response)
 			{
 				return t.toJSON();
 			});
-			response.json(200, result);
+			request.io.respond(200, result);
 		});
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err);
-		response.json(500, err);
+		request.io.respond(500, err);
 	}).done();
 };

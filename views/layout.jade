@@ -62,16 +62,18 @@ html
 						= locals.flash.success[i]
 		.container
 			block content
-		script(src="http://code.jquery.com/jquery.js")
-		script(src='/js/bootstrap.min.js')
-		script(src="https://login.persona.org/include.js")
-		- if (locals.authed_user)
-			script.
-				var authed_user = '#{authed_user.email}';
-		- else
-			script.
-				var authed_user = null;
-		script(src="/js/persona.js")
+		block scripts
+			script(src="http://code.jquery.com/jquery.js")
+			script(src='/js/bootstrap.min.js')
+			script(src="/socket.io/socket.io.js")
+			script(src="https://login.persona.org/include.js")
+			- if (locals.authed_user)
+				script.
+					var authed_user = '#{authed_user.email}';
+			- else
+				script.
+					var authed_user = null;
+			script(src="/js/persona.js")
 		hr
 		footer(style="padding-bottom: 20px;")
 			.container

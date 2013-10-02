@@ -11,7 +11,8 @@ var
 	Controller  = require('./lib/controller'),
 	routes      = require('./routes'),
 	auth        = require('./routes/auth'),
-	api         = require('./routes/api')
+	api         = require('./routes/api'),
+	io          = require('./routes/io')
 	;
 
 var app = express();
@@ -36,6 +37,8 @@ var sessiondb = require('level-session')(
 });
 
 var package = require('./package.json');
+
+app.locals.pretty = true;
 
 // ----------------------------------------------------------------------
 // middleware
@@ -159,6 +162,7 @@ if (config.logging.console)
 	logopts.streams.push({level: 'debug', stream: process.stdout});
 
 app.logger = bunyan.createLogger(logopts);
+io.setLogger(app.logger);
 
 var logstream =
 {
@@ -243,6 +247,22 @@ app.get('/api/1/agendas',            api.agendas);
 app.get('/api/1/topics/:id',       api.topic);
 app.get('/api/1/topics/:id/votes', api.topicVotes);
 app.get('/api/1/topics',           api.topics);
+
+// add socket io routes
+app.io.route('ready', io.onReady);
+
+app.io.route('/io/1/people/:id',         io.person);
+app.io.route('/io/1/people',             io.people);
+app.io.route('/io/1/agendas/:id',        io.agenda);
+app.io.route('/io/1/agendas/:id/topics', io.agendaTopics);
+// app.post('/io/1/agendas/new',            requireAuthedUser, io.handleNewAgenda);
+// app.patch('/io/1/agendas/:id',           requireAuthedUser, io.handleEditAgenda);
+app.io.route('/io/1/agendas',            io.agendas);
+app.io.route('/io/1/topics/:id',         io.topic);
+app.io.route('/io/1/topics/:id/votes',   io.topicVotes);
+app.io.route('/io/1/topics',             io.topics);
+
+
 
 // ----------------------------------------------------------------------
 
