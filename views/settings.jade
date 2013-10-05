@@ -9,6 +9,7 @@ block content
 		| Member since #{person.createdSince()}
 
 	form(action="/settings", method="POST")
+		input(type="hidden", name="_csrf", value="#{_csrf}")
 		.form-group
 			input.form-control.input-lg(type="text", placeholder="Your name", name="iname", value="#{person.name}")
 			span.help-block How other people know you.
@@ -23,3 +24,34 @@ block content
 			button.btn.btn-default(type="cancel") Cancel
 			&nbsp;
 			button.btn.btn-primary(type="submit") Save
+
+block append scripts
+	script(src="/js/avatars.io.min.js")
+	script.
+		var io = io.connect();
+		io.emit('ready', { hey: 'server'}, function(data)
+		{
+			console.log(data);
+		});
+
+		var avatar = new AvatarsIO('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcml2YXRlX3Rva2VuIjoiNzcxYzBhZTU3ODBmMjRlYzc4NTMyYTU0NDhkZTdjNDZiY2U4NTU5ODk3ODUwM2IwMmNhMDBkZTU0ZTIyNjhmZCJ9.hpT0Xq-hvLNlN8GAHCEyMomgGPdFpjui6vN3kPbCTmM');
+		$(function()
+		{
+			var uploader = avatar.create('#avatar'); // selector for input[type="file"] field, here #avatar, for example
+			uploader.on('init', function()
+			{
+				console.log('uploader initialized');
+			});
+			uploader.on('start', function()
+			{
+				console.log('uploader start');
+			});
+			uploader.on('complete', function(url)
+			{
+				console.log('uploader complete; ' + url);
+				io.emit('avatar.url', { url: url }, function(reply)
+				{
+					console.log(reply);
+				});
+			});
+		});

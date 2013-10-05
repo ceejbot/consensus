@@ -7,7 +7,6 @@ var PERSONA = 'https://verifier.login.persona.org:443/verify';
 
 exports.signin = function(request, response)
 {
-
 	var opts =
 	{
 		uri: PERSONA,
@@ -40,8 +39,6 @@ exports.signin = function(request, response)
 				request.app.logger.info('login for ' + person.email + ' recorded');
 				request.session.set('user_id', person.email);
 				response.json({ page: '/' });
-				// set flash message
-				// redirect to index
 			})
 			.fail(function(err)
 			{

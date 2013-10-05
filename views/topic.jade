@@ -20,12 +20,14 @@ block content
 			- if (topic.state !== 'closed')
 				.col-md-2
 					form.form-inline.col-2(method="POST", action="/topics/#{topic.key}/vote/yes")
+						input(type="hidden", name="_csrf", value="#{_csrf}")
 						button.btn.btn-large.btn-block(type="submit", class=yes_class, value="yes")
 							i.icon-large.icon-thumbs-up
 							| &nbsp; Yes 
 						&nbsp;
 				.col-md-2
 					form.form-inline(method="POST", action="/topics/#{topic.key}/vote/no")
+						input(type="hidden", name="_csrf", value="#{_csrf}")
 						button.btn.btn-large.btn-block(type="submit", class=no_class, value='no')
 							i.icon-large.icon-thumbs-down
 							| &nbsp; No
@@ -37,6 +39,7 @@ block content
 							| &nbsp; Edit topic 
 					.col-md-2.pull-right
 						form.form-inline(method="POST", action="/topics/#{topic.key}/close")
+							input(type="hidden", name="_csrf", value="#{_csrf}")
 							button.btn.btn-large.btn-block.color4(type="submit", value="close")
 								i.icon-large.icon-lock
 								| &nbsp; Close topic 
@@ -44,6 +47,7 @@ block content
 				- if (topic.owner === locals.authed_user.email)
 					.col-md-3
 						form.form-inline(method="POST", action="/topics/#{topic.key}/open")
+							input(type="hidden", name="_csrf", value="#{_csrf}")
 							button.btn.btn-large.btn-block.color3(type="submit", value='open')
 								i.icon-large.icon-unlock
 								| &nbsp; Re-open topic

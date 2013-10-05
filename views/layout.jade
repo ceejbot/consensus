@@ -70,9 +70,10 @@ html
 			- if (locals.authed_user)
 				script.
 					var authed_user = '#{authed_user.email}';
+					var _csrf = "#{_csrf}";
 			- else
 				script.
-					var authed_user = null;
+					var authed_user = null, _csrf = "#{_csrf}";
 			script(src="/js/persona.js")
 		hr
 		footer(style="padding-bottom: 20px;")

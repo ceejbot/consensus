@@ -9,20 +9,27 @@ var
 
 exports.index = function(request, response)
 {
+	var locals =
+	{
+		title:   'Consensus',
+		agendas: []
+	};
+
 	Agenda.all()
 	.then(function(agendas)
 	{
-		response.render('index', { title: 'Consensus', agendas: agendas });
+		locals.agendas = agendas;
+		response.render('index', locals);
 	})
 	.fail(function(err)
 	{
 		request.app.logger.error(err, 'error fetching agendas');
 		request.flash('error', 'Warning: couldn\'t fetch agendas.');
-		response.render('index', { title: 'Consensus', agendas: [] });
+		response.render('index', locals);
 	}).done();
 };
 
-exports.relevantAgendas = function relevantAgendas(request, response)
+exports.relevantAgendas = function(request, response)
 {
 	var locals = {};
 	var owner = response.locals.authed_user;
@@ -126,7 +133,10 @@ exports.presentAgenda = function(request, response)
 
 exports.newAgenda = function(request, response)
 {
-	response.render('agenda-edit', { title: 'New agenda' });
+	response.render('agenda-edit',
+	{
+		title: 'New agenda',
+	});
 };
 
 exports.handleNewAgenda = function(request, response)
@@ -155,7 +165,12 @@ exports.handleNewAgenda = function(request, response)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
-		response.render('agenda-edit', { title: 'New agenda', ititle: opts.title, idesc: opts.description });
+		response.render('agenda-edit',
+		{
+			title:  'New agenda',
+			ititle: opts.title,
+			idesc:  opts.description,
+		});
 	}).done();
 };
 
@@ -182,9 +197,9 @@ exports.editAgenda = function(request, response)
 		}
 
 		locals.agenda = agenda;
-		locals.title = agenda.title;
+		locals.title  = agenda.title;
 		locals.ititle = agenda.title;
-		locals.idesc = agenda.description;
+		locals.idesc  = agenda.description;
 
 		response.render('agenda-edit', locals);
 	}).fail(function(err)
@@ -429,8 +444,8 @@ exports.newTopic = function newTopic(request, response)
 
 		var locals =
 		{
-			title: 'New topic',
-			agenda: agenda
+			title:  'New topic',
+			agenda: agenda,
 		};
 		response.render('topic-edit', locals);
 	});
@@ -479,7 +494,7 @@ exports.handleNewTopic = function(request, response)
 				title:  'New topic',
 				ititle: opts.title,
 				idesc:  opts.description,
-				agenda: agenda
+				agenda: agenda,
 			});
 		}).done();
 	});
@@ -508,9 +523,9 @@ exports.editTopic = function(request, response)
 			return;
 		}
 
-		locals.topic = topic;
+		locals.topic  = topic;
 		locals.ititle = topic.title;
-		locals.idesc =  topic.description;
+		locals.idesc  = topic.description;
 
 		return Agenda.get(locals.topic.agenda_id);
 	})
@@ -706,10 +721,12 @@ exports.handleDeleteTopic = function(request, response)
 
 exports.settings = function(request, response)
 {
+	var avatars = app.get('avatars');
 	response.render('settings',
 	{
 		person: response.locals.authed_user,
-		title: 'Your profile'
+		token:  avatars.public,
+		title:  'Your profile'
 	});
 };
 

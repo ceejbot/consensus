@@ -8,6 +8,7 @@ navigator.id.watch(
 			type: 'POST',
 			url: '/auth/signin',
 			data: { assertion: assertion },
+			beforeSend: function(xhr) { xhr.setRequestHeader('x-csrf-token', _csrf); },
 			success: function(res, status, xhr)
 			{
 				window.location.reload();
@@ -25,6 +26,7 @@ navigator.id.watch(
 		{
 			type: 'POST',
 			url: '/auth/signout',
+			beforeSend: function(xhr) { xhr.setRequestHeader('x-csrf-token', _csrf); },
 			success: function(res, status, xhr)
 			{
 				if (window.location.href === '/')
