@@ -19,7 +19,8 @@ block content
 			span.help-block You can use Markdown or html in the description.
 		.form-group
 			#icondiv
-				img#icon(src="#{person.avatar}?size=large")
+				- if (person.avatar)
+					img#icon(src="#{person.avatar}?size=large")
 		.form-group
 			div.uploader
 				input.form-control#iavatar(type="file", name="iavatar")
@@ -65,6 +66,7 @@ block scripts
 			{
 				if (spinner)
 					spinner.stop();
+				console.log(url);
 				var payload =
 				{
 					url: url,
@@ -77,6 +79,8 @@ block scripts
 						$('#icon').attr('src', url + '?size=large');
 						$('#icon_url').val(url);
 					}
+					else
+						console.log(reply);
 				});
 			});
 		});

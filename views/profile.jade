@@ -11,7 +11,8 @@ block content
 	- if (person.avatar)
 		.row
 			.col-xs-2
-				img.img-responsive(src="#{person.avatar}?size=large")
+				- if (person.avatar)
+					img.img-responsive(src="#{person.avatar}?size=large")
 			.col-xs-10
 				h2= person.displayName()
 				p= person.email
