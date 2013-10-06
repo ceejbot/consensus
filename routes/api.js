@@ -1,6 +1,6 @@
 var
 	_      = require('lodash'),
-    assert = require('assert'),
+	assert = require('assert'),
 	Agenda = require('../lib/Agenda'),
 	Topic  = require('../lib/Topic'),
 	Vote   = require('../lib/Vote'),
@@ -197,5 +197,3 @@ exports.topicVotes = function(request, response)
 		response.json(500, err);
 	}).done();
 };
-
-

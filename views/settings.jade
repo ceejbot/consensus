@@ -9,6 +9,7 @@ block content
 		| Member since #{person.createdSince()}
 
 	form(action="/settings", method="POST")
+		input(type="hidden", name="_csrf", value="#{_csrf}")
 		.form-group
 			input.form-control.input-lg(type="text", placeholder="Your name", name="iname", value="#{person.name}")
 			span.help-block How other people know you.
@@ -17,9 +18,65 @@ block content
 				= person.description
 			span.help-block You can use Markdown or html in the description.
 		.form-group
-			input.form-control.input-lg(type="text", placeholder="http://avatar.url.png", name="iavatar", value="#{person.avatar}")
-			span.help-block Url for an image to use as a representation of you.
+			#icondiv
+				img#icon(src="#{person.avatar}?size=large")
+		.form-group
+			div.uploader
+				input.form-control#iavatar(type="file", name="iavatar")
+				span.help-block An image to use as a representation of you.
+		.form-group
+			input.form-control#icon_url(type="text", name="iavatar_url", value="#{person.avatar}")
+			span.help-block Or type in a url.
 		.form-group
 			button.btn.btn-default(type="cancel") Cancel
 			&nbsp;
 			button.btn.btn-primary(type="submit") Save
+
+block scripts
+	- if (locals.authed_user)
+		script.
+			var authed_user = '#{authed_user.email}';
+			var _csrf = "#{_csrf}";
+	- else
+		script.
+			var authed_user = null, _csrf = "#{_csrf}";
+	script(src="http://code.jquery.com/jquery.js")
+	script(src="/js/bootstrap.min.js")
+	script(src="/socket.io/socket.io.js")
+	script(src="/js/avatars.io.min.js")
+	script(src="/js/spin.min.js")
+	script.
+		var spinner;
+		var socket = io.connect();
+
+		$(function()
+		{
+			var avatar = new AvatarsIO('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcml2YXRlX3Rva2VuIjoiNzcxYzBhZTU3ODBmMjRlYzc4NTMyYTU0NDhkZTdjNDZiY2U4NTU5ODk3ODUwM2IwMmNhMDBkZTU0ZTIyNjhmZCJ9.hpT0Xq-hvLNlN8GAHCEyMomgGPdFpjui6vN3kPbCTmM');
+			var uploader = avatar.create('#iavatar');
+			// uploader.setIdentifier(authed_user);
+
+			uploader.on('start', function()
+			{
+				var target = document.getElementById('icondiv');
+				spinner = new Spinner().spin(target);
+			});
+
+			uploader.on('complete', function(url)
+			{
+				if (spinner)
+					spinner.stop();
+				var payload =
+				{
+					url: url,
+					email: authed_user
+				};
+				socket.emit('io.1.avatar:url', payload, function(reply)
+				{
+					if (reply.okay)
+					{
+						$('#icon').attr('src', url + '?size=large');
+						$('#icon_url').val(url);
+					}
+				});
+			});
+		});

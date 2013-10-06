@@ -1,0 +1,17 @@
+{
+	"name":    "General Products, Inc",
+	"port":    3000,
+	"dbpath":  "/var/db/consensus",
+	"logging":
+	{
+		"path":    "/var/log/consensus",
+		"console": false
+	},
+	"secrets": ["your cookie secret passphrase list", "which gets passed to keygrip" ],
+	"avatars.io":
+	{
+		"public":  "your-public-access-token",
+		"private": "your-private-oauth-token",
+		"appid":   "your-app-id"
+	}
+}

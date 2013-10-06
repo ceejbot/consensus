@@ -32,7 +32,7 @@ Consensus makes no attempt to restrict access to the data or to account creation
 
 ## Installing
 
-Clone the repo or `npm install consensus`. Copy the sample config file in `config.js.sample` to `config.js` and edit to your satisfaction.
+Clone the repo or `npm install consensus`. Copy the sample config file in `config.json.sample` to `config.json` and edit to your satisfaction.
 
 ```javascript
 {
@@ -44,7 +44,13 @@ Clone the repo or `npm install consensus`. Copy the sample config file in `confi
 		"path": "/var/log/consensus",
 		"console": false
 	},
-	"secrets": ["your cookie secret passphrase thingie", "which get passed to keygrip" ]
+	"secrets": ["your cookie secret passphrase thingie", "which get passed to keygrip" ],
+	"avatars.io":
+	{
+		"public":  "your-public-access-token",
+		"private": "your-private-oauth-token",
+		"appid":   "your-app-id"
+	}
 }
 ```
 
@@ -53,6 +59,12 @@ You may also pass in the location of the config file using the `CONFIG_FILE` env
 Install dependencies: `npm install`.
 
 Then start the app: `npm start`.
+
+## Avatars.io integration
+
+TBD
+
+Consensus can use [avatars.io](http://avatars.io/) to provide custom avatars for your users.
 
 ## Customizing
 

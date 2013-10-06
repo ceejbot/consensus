@@ -1,0 +1,22 @@
+{
+  "name": "consensus",
+  "main": "index.js",
+  "version": "0.0.4",
+  "homepage": "https://github.com/ceejbot/consensus",
+  "authors": [
+    "C J Silverio <ceejceej@gmail.com>"
+  ],
+  "description": "why does this duplicate what's in the package.json?",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.0.20130912"
+  }
+}

@@ -11,6 +11,7 @@ block content
 			.
 		- faction = "/agendas/" + agenda.key + "/topics/new"
 	form.col-10(method="POST", action=faction)
+		input(type="hidden", name="_csrf", value="#{_csrf}")
 		.form-group
 			- if (locals.ititle)
 				input.form-control.input-lg(type="text", name="ititle", value="#{locals.ititle}")

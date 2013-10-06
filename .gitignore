@@ -13,7 +13,8 @@ results
 
 npm-debug.log
 node_modules
+bower_components
 .DS_Store
 db
 log
-config.js
+config.json

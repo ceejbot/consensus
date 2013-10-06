@@ -13,6 +13,7 @@ mixin topicRow(topic)
 		td
 			- if (isOwner && (topic.state !== 'closed'))
 				form.form-inline(method="POST", action="/topics/#{topic.key}/close")
+					input(type="hidden", name="_csrf", value="#{_csrf}")
 					button.btn.color4b(type="submit", value="close")
 						i.icon-large.icon-check
 						| &nbsp; Resolve
@@ -70,11 +71,13 @@ block content
 							| Edit agenda
 					.col-md-3
 						form.form-inline(method="POST", action="/agendas/#{agenda.key}/close")
+							input(type="hidden", name="_csrf", value="#{_csrf}")
 							button.btn.btn-danger(type="submit", value='close')
 								i.icon-large.icon-archive 
 								| Archive this agenda
 		- else if (authed_user.email === agenda.owner_id)
 			form.form-inline(method="POST", action="/agendas/#{agenda.key}/open")
+				input(type="hidden", name="_csrf", value="#{_csrf}")
 				button.btn.btn-success(type="submit", value='open')
 					i.icon-large.icon-archive 
 					| Re-open this agenda
