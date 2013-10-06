@@ -113,7 +113,7 @@ exports.presentAgenda = function(request, response)
 			people[proposers[i].key] = proposers[i];
 
 		locals.tjson = [];
-		for (var i = 0; i < locals.topics.length; i++)
+		for (i = 0; i < locals.topics.length; i++)
 		{
 			var t = locals.topics[i].toJSON();
 			t.description = marked(t.description);
@@ -721,7 +721,7 @@ exports.handleDeleteTopic = function(request, response)
 
 exports.settings = function(request, response)
 {
-	var avatars = app.get('avatars');
+	var avatars = request.app.get('avatars');
 	response.render('settings',
 	{
 		person: response.locals.authed_user,
@@ -734,8 +734,8 @@ exports.handleSettings = function(request, response)
 {
 	var person = response.locals.authed_user;
 
-	if (request.body.avatar)
-		request.assert('iavatar', 'avatar is not a valid url').isUrl();
+	if (request.body.iavatar_url)
+		request.assert('iavatar_url', 'avatar is not a valid url').isUrl();
 
 	var errors = request.validationErrors();
 	if (errors)
@@ -752,7 +752,7 @@ exports.handleSettings = function(request, response)
 
 	person.name = request.sanitize('iname').xss();
 	person.description = request.sanitize('idesc').xss();
-	person.avatar = request.sanitize('iavatar').xss();
+	person.avatar = request.sanitize('iavatar_url').xss();
 	person.modified = Date.now();
 
 	person.save()

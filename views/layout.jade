@@ -22,11 +22,10 @@ html
 				ul.nav.navbar-nav
 					- if (locals.authed_user !== null)
 						li
-							a(href="/u/#{authed_user.email}") Profile
+							a(href="/u/#{authed_user.email}") #{authed_user.email}
 						li
 							a(href="/settings") 
 								i.icon-gear.icon-large
-								| &nbsp; #{authed_user.email}
 				.navbar-right
 					- if (locals.authed_user !== null)
 						button.btn.btn-default.navbar-btn#signout(type="button") 

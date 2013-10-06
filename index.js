@@ -255,8 +255,18 @@ app.get('/api/1/topics/:id',       api.topic);
 app.get('/api/1/topics/:id/votes', api.topicVotes);
 app.get('/api/1/topics',           api.topics);
 
-// add socket io routes
+// ----------------------------------------------------------------------
+// add socket io routes & middleware
+
+function ioAuthedUser(data, next)
+{
+	next();
+}
+
+
 app.get('/realtime',         io.keepItReal);
+app.io.route('io.1.avatar', io.avatar);
+
 app.io.route('io.1.ready',   io.onReady);
 app.io.route('io.1.person',  io.person);
 app.io.route('io.1.people',  io.peopleHandlers);

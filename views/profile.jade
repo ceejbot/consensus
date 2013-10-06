@@ -10,9 +10,9 @@ mixin agendaRow(agenda)
 block content
 	- if (person.avatar)
 		.row
-			.col-xs-3
-				img.img-responsive(src="#{person.avatar}")
-			.col-xs-9
+			.col-xs-2
+				img.img-responsive(src="#{person.avatar}?size=large")
+			.col-xs-10
 				h2= person.displayName()
 				p= person.email
 				!= description

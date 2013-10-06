@@ -18,40 +18,65 @@ block content
 				= person.description
 			span.help-block You can use Markdown or html in the description.
 		.form-group
-			input.form-control.input-lg(type="text", placeholder="http://avatar.url.png", name="iavatar", value="#{person.avatar}")
-			span.help-block Url for an image to use as a representation of you.
+			#icondiv
+				img#icon(src="#{person.avatar}?size=large")
+		.form-group
+			div.uploader
+				input.form-control#iavatar(type="file", name="iavatar")
+				span.help-block An image to use as a representation of you.
+		.form-group
+			input.form-control#icon_url(type="text", name="iavatar_url", value="#{person.avatar}")
+			span.help-block Or type in a url.
 		.form-group
 			button.btn.btn-default(type="cancel") Cancel
 			&nbsp;
 			button.btn.btn-primary(type="submit") Save
 
-block append scripts
+block scripts
+	- if (locals.authed_user)
+		script.
+			var authed_user = '#{authed_user.email}';
+			var _csrf = "#{_csrf}";
+	- else
+		script.
+			var authed_user = null, _csrf = "#{_csrf}";
+	script(src="http://code.jquery.com/jquery.js")
+	script(src="/js/bootstrap.min.js")
+	script(src="/socket.io/socket.io.js")
 	script(src="/js/avatars.io.min.js")
+	script(src="/js/spin.min.js")
 	script.
-		var io = io.connect();
-		io.emit('ready', { hey: 'server'}, function(data)
-		{
-			console.log(data);
-		});
+		var spinner;
+		var socket = io.connect();
 
-		var avatar = new AvatarsIO('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcml2YXRlX3Rva2VuIjoiNzcxYzBhZTU3ODBmMjRlYzc4NTMyYTU0NDhkZTdjNDZiY2U4NTU5ODk3ODUwM2IwMmNhMDBkZTU0ZTIyNjhmZCJ9.hpT0Xq-hvLNlN8GAHCEyMomgGPdFpjui6vN3kPbCTmM');
 		$(function()
 		{
-			var uploader = avatar.create('#avatar'); // selector for input[type="file"] field, here #avatar, for example
-			uploader.on('init', function()
-			{
-				console.log('uploader initialized');
-			});
+			var avatar = new AvatarsIO('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcml2YXRlX3Rva2VuIjoiNzcxYzBhZTU3ODBmMjRlYzc4NTMyYTU0NDhkZTdjNDZiY2U4NTU5ODk3ODUwM2IwMmNhMDBkZTU0ZTIyNjhmZCJ9.hpT0Xq-hvLNlN8GAHCEyMomgGPdFpjui6vN3kPbCTmM');
+			var uploader = avatar.create('#iavatar');
+			// uploader.setIdentifier(authed_user);
+
 			uploader.on('start', function()
 			{
-				console.log('uploader start');
+				var target = document.getElementById('icondiv');
+				spinner = new Spinner().spin(target);
 			});
+
 			uploader.on('complete', function(url)
 			{
-				console.log('uploader complete; ' + url);
-				io.emit('avatar.url', { url: url }, function(reply)
+				if (spinner)
+					spinner.stop();
+				var payload =
 				{
-					console.log(reply);
+					url: url,
+					email: authed_user
+				};
+				socket.emit('io.1.avatar:url', payload, function(reply)
+				{
+					if (reply.okay)
+					{
+						$('#icon').attr('src', url + '?size=large');
+						$('#icon_url').val(url);
+					}
 				});
 			});
 		});

@@ -19,15 +19,16 @@
 	},
 	"dependencies":
 	{
-		"express.io":         "*",
-		"leveldown":          "*",
+		"avatars.io":         "*",
 		"bluebird":           "*",
 		"bunyan":             "*",
 		"connect-multiparty": "*",
+		"express.io":         "*",
 		"express-validator":  "*",
 		"helmet":             "*",
 		"jade":               "*",
 		"keygrip":            "*",
+		"leveldown":          "*",
 		"level-session":      "git://github.com/ceejbot/node-level-session.git#callback-on-destroy",
 		"level-session-csrf": "*",
 		"level-sublevel":     "*",

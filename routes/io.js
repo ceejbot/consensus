@@ -19,6 +19,38 @@ exports.setLogger = function(log)
 	logger = log.child({ type: 'socket.io' });
 };
 
+exports.avatar =
+{
+	url: function(request)
+	{
+		logger.info({ data: request.data }, 'SOCKET avatar:url');
+
+		var data = request.data;
+		var email = data.email;
+		var url = data.url;
+
+		Person.get(email)
+		.then(function(person)
+		{
+			if (person)
+			{
+				person.avatar = url;
+				return person.save();
+			}
+		})
+		.then(function(result)
+		{
+			logger.info({ avatar: url, user: email }, 'avatar saved');
+			request.io.respond({ okay: !!result, url: url });
+		})
+		.fail(function(err)
+		{
+			logger.error({ error: err }, 'while fetching person id=' +email);
+			request.io.respond({ okay: false, error: true });
+		}).done();
+	}
+};
+
 exports.onReady = function(request)
 {
 	var data = request.data;
