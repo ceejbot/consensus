@@ -1,6 +1,6 @@
 {
 	"name":        "consensus",
-	"version":     "0.0.4",
+	"version":     "0.0.5",
 	"description": "vote for topics for your next meeting",
 	"keywords":    [ "voting", "topics", "moderator" ],
 	"author":      "C J Silverio <ceejceej@gmail.com>",
@@ -19,14 +19,18 @@
 	},
 	"dependencies":
 	{
-		"express.io":         "*",
-		"leveldown":          "*",
+		"avatars.io":         "*",
+		"bluebird":           "*",
 		"bunyan":             "*",
 		"connect-multiparty": "*",
+		"express.io":         "*",
 		"express-validator":  "*",
+		"helmet":             "*",
 		"jade":               "*",
 		"keygrip":            "*",
+		"leveldown":          "*",
 		"level-session":      "git://github.com/ceejbot/node-level-session.git#callback-on-destroy",
+		"level-session-csrf": "*",
 		"level-sublevel":     "*",
 		"levelup":            "*",
 		"lodash":             "*",

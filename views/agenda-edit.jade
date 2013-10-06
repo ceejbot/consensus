@@ -11,6 +11,7 @@ block content
 	- else
 		- action = '/agendas/new'
 	form.col-10(method="POST", action="#{action}")
+		input(type="hidden", name="_csrf", value="#{_csrf}")
 		.form-group
 			- if (locals.ititle)
 				input.form-control.input-lg(type="text", placeholder="Title", name="ititle", value="#{ititle}") 

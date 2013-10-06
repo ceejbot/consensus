@@ -1,8 +1,10 @@
 var
 	bunyan      = require('bunyan'),
+	csrf        = require('level-session-csrf');
 	express     = require('express.io'),
 	exValidator = require('express-validator'),
 	fs          = require('fs'),
+	helmet      = require('helmet'),
 	http        = require('http'),
 	multiparty  = require('connect-multiparty'),
 	path        = require('path'),
@@ -11,7 +13,8 @@ var
 	Controller  = require('./lib/controller'),
 	routes      = require('./routes'),
 	auth        = require('./routes/auth'),
-	api         = require('./routes/api')
+	api         = require('./routes/api'),
+	io          = require('./routes/io')
 	;
 
 var app = express();
@@ -22,9 +25,7 @@ process.title = appname;
 
 app.SESSION_TTL = 60 * 60 * 24 * 365; // 1 year in seconds
 
-var config = fs.readFileSync(process.env.CONFIG_FILE || './config.js');
-if (config.length)
-	config = JSON.parse(config);
+var config = require(process.env.CONFIG_FILE || './config.json');
 
 var controller = new Controller(config);
 app.controller = controller;
@@ -36,6 +37,10 @@ var sessiondb = require('level-session')(
 });
 
 var package = require('./package.json');
+
+app.locals.pretty = true;
+
+app.set('avatars', config['avatars.io']);
 
 // ----------------------------------------------------------------------
 // middleware
@@ -77,6 +82,7 @@ function initializePageLocals(request, response, next)
 {
 	response.locals.sitename = config.name;
 	response.locals.version = package.version;
+	response.locals._csrf = request.csrfToken();
 
 	request.session.get('user_id', function(err, user_id)
 	{
@@ -159,6 +165,7 @@ if (config.logging.console)
 	logopts.streams.push({level: 'debug', stream: process.stdout});
 
 app.logger = bunyan.createLogger(logopts);
+io.setLogger(app.logger);
 
 var logstream =
 {
@@ -172,13 +179,17 @@ app.set('port', process.env.PORT || config.port || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
-app.use(express.logger({stream: logstream, format: 'tiny'}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.logger({stream: logstream, format: 'tiny'}));
 app.use(multiparty.bodyParser());
 app.use(exValidator());
 app.use(express.methodOverride());
-app.use(express.cookieParser(process.env.NOMNOMNOM));
+app.use(express.cookieParser('yeah this needs to be configurable'));
 app.use(sessiondb);
+app.use(csrf());
+app.use(helmet.xframe());
+app.use(helmet.iexss());
+app.use(helmet.contentTypeOptions());
 app.use(flash);
 app.use(initializePageLocals);
 app.use(authenticatedUser);
@@ -243,6 +254,24 @@ app.get('/api/1/agendas',            api.agendas);
 app.get('/api/1/topics/:id',       api.topic);
 app.get('/api/1/topics/:id/votes', api.topicVotes);
 app.get('/api/1/topics',           api.topics);
+
+// ----------------------------------------------------------------------
+// add socket io routes & middleware
+
+function ioAuthedUser(data, next)
+{
+	next();
+}
+
+
+app.get('/realtime',         io.keepItReal);
+app.io.route('io.1.avatar', io.avatar);
+
+app.io.route('io.1.ready',   io.onReady);
+app.io.route('io.1.person',  io.person);
+app.io.route('io.1.people',  io.peopleHandlers);
+app.io.route('io.1.agendas', io.agendaHandlers);
+app.io.route('io.1.topics',  io.topicHandlers);
 
 // ----------------------------------------------------------------------
 

@@ -1,0 +1,42 @@
+extends layout
+
+mixin agendaRow(agenda)
+	tr
+		td
+			a(href="/agendas/#{agenda.key}")
+				i.icon-tasks  &nbsp;
+				= agenda.title
+		td
+			a(href="/u/#{agenda.owner_id}")= agenda.owner_id
+
+block content
+	- if (!locals.authed_user)
+		.color2c.jumbotron.color2c
+			h1 Seek Consensus
+			p.
+				Propose topics or questions to be discussed at your next meeting, or 
+				vote on the proposals from your colleagues.
+			p
+				button.btn.btn-lg.color2a.signin Sign in with Persona  &raquo;
+	- else
+		h1 Open agendas
+
+		- if (!locals.agendas || locals.agendas.length === 0)
+			p No meetings are seeking your consensus today.
+		- else
+			table.table.table-striped.table-bordered.color2
+				tr
+					th Name
+					th Owner
+				- each agenda in locals.agendas
+					+agendaRow(agenda)
+		p 
+			a.btn.btn-lg.color2(href="/agendas/new") Create a new agenda &raquo;
+
+block append scripts
+	script.
+		var io = io.connect();
+		io.emit('ready', { hey: 'server'}, function(data)
+		{
+			console.log(data);
+		})
