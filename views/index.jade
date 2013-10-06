@@ -18,17 +18,17 @@ block content
 				vote on the proposals from your colleagues.
 			p
 				button.btn.btn-lg.color2a.signin Sign in with Persona  &raquo;
-	- else
-		h1 Open agendas
+	h2 Open agendas
 
-		- if (!locals.agendas || locals.agendas.length === 0)
-			p No meetings are seeking your consensus today.
-		- else
-			table.table.table-striped.table-bordered.color2
-				tr
-					th Name
-					th Owner
-				- each agenda in locals.agendas
-					+agendaRow(agenda)
+	- if (!locals.agendas || locals.agendas.length === 0)
+		p No meetings are seeking your consensus today.
+	- else
+		table.table.table-striped.table-bordered.color2
+			tr
+				th Name
+				th Owner
+			- each agenda in locals.agendas
+				+agendaRow(agenda)
+	- if (locals.authed_user)
 		p 
 			a.btn.btn-lg.color2(href="/agendas/new") Create a new agenda &raquo;
