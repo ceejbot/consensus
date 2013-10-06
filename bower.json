@@ -17,6 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.0.20130912"
+    "polymer": "~0.0.20130912",
+    "bootstrap": "~3.0.0"
   }
 }
