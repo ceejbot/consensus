@@ -21,7 +21,6 @@ var app = express();
 app.http().io();
 
 var appname = 'consensus';
-process.title = appname;
 
 app.SESSION_TTL = 60 * 60 * 24 * 365; // 1 year in seconds
 
