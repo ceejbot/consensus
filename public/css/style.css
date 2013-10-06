@@ -1,8 +1,14 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+#icondiv
+{
+	height: 256px;
+	width: 256px;
 }
 
-a {
-  color: #00B7FF;
+.avatar
+{
+	min-height: 175px;
+	min-width: 175px;
+	background-attachment: top left;
+	background-size: cover;
+	background-repeat: none;
 }

@@ -12,20 +12,24 @@ block content
 		.row
 			.col-xs-2
 				- if (person.avatar)
-					img.img-responsive(src="#{person.avatar}?size=large")
+					.avatar(style='background-image: url("#{person.avatar}?size=large")')
 			.col-xs-10
 				h2= person.displayName()
 				p= person.email
-				!= description
+				.well!= description
 	- else
 		h2= person.displayName()
 		p= person.email
-		!= description
+		.well!= description
 	.clearfix
-	h3 Agendas of interest
-	table.table.table-striped.table-bordered.color2
-		tr
-			th Name
-			th Owner
-		- each agenda in locals.agendas
-			+agendaRow(agenda)
+	- if (agendas.length > 0)
+		h3 Agendas of interest
+		table.table.table-striped.table-bordered.color2
+			tr
+				th Name
+				th Owner
+			- each agenda in locals.agendas
+				+agendaRow(agenda)
+	- else
+		p= person.displayName()
+			|  isn't tracking any agendas yet.

@@ -781,6 +781,7 @@ exports.profile = function(request, response)
 		{
 			request.flash('warning', 'Profile for ' + uid + ' not found.');
 			response.redirect('/');
+			return;
 		}
 
 		locals.person = person;
@@ -789,8 +790,11 @@ exports.profile = function(request, response)
 	})
 	.then(function(agendas)
 	{
-		locals.agendas = agendas;
-		response.render('profile', locals);
+		if (Array.isArray(agendas))
+		{
+			locals.agendas = agendas;
+			response.render('profile', locals);
+		}
 	})
 	.fail(function(err)
 	{

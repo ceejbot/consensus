@@ -4,9 +4,7 @@ block content
 	.page-header
 		h1= person.email
 
-	p= person.email
-		br
-		| Member since #{person.createdSince()}
+	p Member since #{person.createdSince()}
 
 	form(action="/settings", method="POST")
 		input(type="hidden", name="_csrf", value="#{_csrf}")
@@ -18,16 +16,17 @@ block content
 				= person.description
 			span.help-block You can use Markdown or html in the description.
 		.form-group
-			#icondiv
-				- if (person.avatar)
-					img#icon(src="#{person.avatar}?size=large")
-		.form-group
-			div.uploader
-				input.form-control#iavatar(type="file", name="iavatar")
-				span.help-block An image to use as a representation of you.
-		.form-group
-			input.form-control#icon_url(type="text", name="iavatar_url", value="#{person.avatar}")
-			span.help-block Or type in a url.
+			.row
+				#icondiv.col-sm-2
+					- if (person.avatar)
+						img.img-responsive#icon(src="#{person.avatar}?size=large")
+					- else
+						img.img-responsive#icon(src="holder.js/150x150")
+				.uploader.col-sm-9
+					input.form-control#iavatar(type="file", name="iavatar")
+					span.help-block An image to use as a representation of you.
+					input.form-control#icon_url(type="text", name="iavatar_url", value="#{person.avatar}")
+					span.help-block Or type in a url.
 		.form-group
 			button.btn.btn-default(type="cancel") Cancel
 			&nbsp;
@@ -46,6 +45,7 @@ block scripts
 	script(src="/socket.io/socket.io.js")
 	script(src="/js/avatars.io.min.js")
 	script(src="/js/spin.min.js")
+	script(src="/js/holder.min.js")
 	script.
 		var spinner;
 		var socket = io.connect();
