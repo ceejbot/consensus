@@ -20,8 +20,8 @@ exports.index = function(request, response)
 	{
 		locals.agendas = agendas;
 		response.render('index', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err, 'error fetching agendas');
 		request.flash('error', 'Warning: couldn\'t fetch agendas.');
@@ -45,8 +45,8 @@ exports.relevantAgendas = function(request, response)
 	{
 		locals.agendas = agendas;
 		response.render('agendas-mine', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.flash('error', err.message);
 		response.redirect('/');
@@ -70,8 +70,8 @@ exports.agenda = function(request, response)
 	{
 		locals.agenda.topics = topics;
 		response.render('agenda', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', 'That agenda doesn\'t exist.');
@@ -122,8 +122,8 @@ exports.presentAgenda = function(request, response)
 		}
 
 		response.render('agenda-present', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', 'That agenda doesn\'t exist.');
@@ -161,7 +161,8 @@ exports.handleNewAgenda = function(request, response)
 	{
 		request.flash('success', 'Agenda created.');
 		response.redirect('/agendas/' + agenda.key);
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -202,7 +203,8 @@ exports.editAgenda = function(request, response)
 		locals.idesc  = agenda.description;
 
 		response.render('agenda-edit', locals);
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -240,7 +242,8 @@ exports.handleEditAgenda = function(request, response)
 		request.flash('Your agenda has been updated.');
 		response.redirect('/agendas/' + request.params.id);
 
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -278,7 +281,8 @@ exports.handleCloseAgenda = function(request, response)
 	{
 		request.flash('Your agenda has been marked as inactive.');
 		response.redirect('/agendas/' + request.params.id);
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -316,7 +320,8 @@ exports.handleOpenAgenda = function(request, response)
 	{
 		request.flash('Your agenda has been marked as active.');
 		response.redirect('/agendas/' + request.params.id);
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -362,7 +367,8 @@ exports.handleDeleteAgenda = function(request, response)
 	{
 		request.flash('The agenda "' + agenda.title + '" has been deleted.');
 		response.redirect('/');
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -421,8 +427,8 @@ exports.topic = function(request, response)
 	{
 		locals.agenda = agenda;
 		response.render('topic', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error('topic() error: ' + request.params.tid, err);
 		request.flash('error', err.message);
@@ -485,7 +491,8 @@ exports.handleNewTopic = function(request, response)
 			request.app.logger.info(topic, 'topic created by ' + owner.key);
 			request.flash('success', 'Topic created.');
 			response.redirect('/topics/' + topic.key);
-		}).fail(function(err)
+		},
+		function(err)
 		{
 			response.app.logger.error(err);
 			request.flash('error', err.message);
@@ -533,8 +540,8 @@ exports.editTopic = function(request, response)
 	{
 		locals.agenda = agenda;
 		response.render('topic-edit', locals);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error('editTopic() error fetching topic: ' + request.params.tid, err);
 		request.flash('error', err.message);
@@ -575,8 +582,8 @@ exports.handleEditTopic = function(request, response)
 	{
 		request.flash('success', 'Topic edits saved.');
 		response.redirect('/topics/' + request.params.tid);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err, 'handleEditTopic() error fetching topic: ' + request.params.tid);
 		request.flash('error', err.message);
@@ -643,8 +650,8 @@ exports.handleTopicVote = function handleTopicVote(request, response)
 		response.app.logger.debug('vote: ' + vote.key + ' -> ' + vote.state);
 		request.flash('success', 'Your vote has been recorded.');
 		response.redirect('/topics/' + topic_id);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -683,8 +690,8 @@ exports.closeTopic = function(request, response)
 		response.app.logger.debug('topic: ' + opts.topic.key + ' closed by ' + person.email);
 		request.flash('success', 'That topic has been marked as closed.');
 		response.redirect('/agendas/' + opts.topic.agenda_id);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -709,8 +716,8 @@ exports.handleDeleteTopic = function(request, response)
 		response.app.logger.debug('topic: ' + opts.topic.key + ' deleted by ' + person.email);
 		request.flash('success', 'Topic "' + opts.topic.title + '" has been deleted.');
 		response.redirect('/agendas/' + opts.topic.agenda_id);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -760,8 +767,8 @@ exports.handleSettings = function(request, response)
 	{
 		request.flash('success', 'You have updated your profile.');
 		response.redirect('/u/' + person.key);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);
@@ -795,8 +802,8 @@ exports.profile = function(request, response)
 			locals.agendas = agendas;
 			response.render('profile', locals);
 		}
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		request.flash('error', err.message);

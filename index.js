@@ -127,8 +127,8 @@ function authenticatedUser(request, response, next)
 	.then(function(person)
 	{
 		response.locals.authed_user = person;
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		app.logger.warn('session error', err);
 	}).done(function()
