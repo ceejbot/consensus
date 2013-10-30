@@ -30,7 +30,7 @@
 		"jade":               "*",
 		"keygrip":            "*",
 		"leveldown":          "*",
-		"level-session":      "*",
+		"level-session":      "git://github.com/ceejbot/node-level-session.git#callback-on-destroy",
 		"level-session-csrf": "*",
 		"level-sublevel":     "*",
 		"levelup":            "*",
