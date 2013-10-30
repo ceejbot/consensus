@@ -1,6 +1,6 @@
 {
 	"name":        "consensus",
-	"version":     "0.0.6",
+	"version":     "0.0.7",
 	"description": "vote for topics for your next meeting",
 	"keywords":    [ "voting", "topics", "moderator" ],
 	"author":      "C J Silverio <ceejceej@gmail.com>",
