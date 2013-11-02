@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/ceejbot/consensus.png?label=ready)](https://waffle.io/ceejbot/consensus)  
 # Consensus
 
 Imagine a Google Moderator that didn't make you tear your hair out. That's Consensus.
