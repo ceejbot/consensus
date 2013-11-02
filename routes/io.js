@@ -42,8 +42,8 @@ exports.avatar =
 		{
 			logger.info({ avatar: url, user: email }, 'avatar saved');
 			request.io.respond({ okay: !!result, url: url });
-		})
-		.fail(function(err)
+		},
+		function(err)
 		{
 			logger.error({ error: err }, 'while fetching person id=' +email);
 			request.io.respond({ okay: false, error: true });
@@ -72,8 +72,8 @@ exports.person = function(request)
 			return request.io.respond({ okay: false });
 
 		request.io.respond({ okay: true, person: person.toJSON() });
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		logger.error({ error: err }, 'while fetching person id=' +email);
 		request.io.respond({ okay: false, error: true });

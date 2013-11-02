@@ -39,8 +39,8 @@ exports.signin = function(request, response)
 				request.app.logger.info('login for ' + person.email + ' recorded');
 				request.session.set('user_id', person.email);
 				response.json({ page: '/' });
-			})
-			.fail(function(err)
+			},
+			function(err)
 			{
 				response.app.logger.warn(err);
 				// set flash message

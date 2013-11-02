@@ -17,8 +17,8 @@ exports.person = function(request, response)
 			return request.send(404);
 
 		response.json(person.toJSON());
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		response.json(500, err);
 	}).done();
@@ -34,8 +34,8 @@ exports.people = function(request, response)
 			return p.toJSON();
 		});
 		response.json(result);
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
@@ -51,8 +51,8 @@ exports.agenda = function(request, response)
 			response.send(404);
 		else
 			response.json(200, agenda.toJSON());
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
@@ -85,7 +85,8 @@ exports.handleNewAgenda = function(request, response)
 	.then(function()
 	{
 		response.json(201, agenda.toJSON());
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
@@ -119,7 +120,8 @@ exports.handleEditAgenda = function(request, response)
 	{
 		if (reply)
 			response.json(200, agenda.toJSON());
-	}).fail(function(err)
+	},
+	function(err)
 	{
 		response.app.logger.error(err);
 		response.json(500, err);
@@ -143,8 +145,8 @@ exports.agendaTopics = function(request, response)
 			});
 			response.json(200, result);
 		});
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
@@ -160,8 +162,8 @@ exports.topic = function(request, response)
 			response.send(404);
 		else
 			response.json(200, topic.toJSON());
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
@@ -190,8 +192,8 @@ exports.topicVotes = function(request, response)
 			});
 			response.json(200, result);
 		});
-	})
-	.fail(function(err)
+	},
+	function(err)
 	{
 		request.app.logger.error(err);
 		response.json(500, err);
