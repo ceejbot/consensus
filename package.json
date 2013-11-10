@@ -1,5 +1,6 @@
 {
 	"name":        "consensus",
+	"type":        "app",
 	"version":     "0.0.8",
 	"description": "vote for topics for your next meeting",
 	"keywords":    [ "voting", "topics", "moderator" ],
