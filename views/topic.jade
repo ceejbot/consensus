@@ -14,7 +14,6 @@ block content
 	.well!= description
 	p Current tally: 
 		b= topic.tally
-		.
 	if (locals.authed_user)
 		.row
 			- if (topic.state !== 'closed')

@@ -8,7 +8,6 @@ block content
 	- else 
 		p Add a topic for discussion at 
 			a(href="/agendas/#{agenda.key}")= agenda.title
-			.
 		- faction = "/agendas/" + agenda.key + "/topics/new"
 	form.col-10(method="POST", action=faction)
 		input(type="hidden", name="_csrf", value="#{_csrf}")
