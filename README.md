@@ -1,5 +1,7 @@
 # Consensus
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ceejbot/consensus.svg)](https://greenkeeper.io/)
+
 Imagine a Google Moderator that didn't make you tear your hair out. That's Consensus.
 
 [![NPM](https://nodei.co/npm/consensus.png)](https://nodei.co/npm/consensus/)
